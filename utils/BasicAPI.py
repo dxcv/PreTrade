@@ -6,7 +6,7 @@
 """
 import re
 import datetime
-from InfoApi import *
+from utils.InfoApi import *
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -15,7 +15,6 @@ sys.setdefaultencoding('utf8')
 class BasicAPI:
     def __init__(self):
         self.data=None
-        # self.mysql = InfoApi().GetDbHistoryConnect()
 
     def GetResultList(self, result):
         """
@@ -80,10 +79,10 @@ class BasicAPI:
         return  year,month
 
 
-    def GetInstrumentMonth(self,TradeCode,ExchangeID):
+    def GetInstrumentMonth(self,info,TradeCode,ExchangeID):
         """输入交易代码，即可查询该品种最近正在交易的合约"""
         sql="""select Delivemonth from [PreTrade].[dbo].[StandContract] where [TradeCode]='%s'"""%TradeCode
-        temp=self.mysql.ExecQueryGetList(sql)[0]
+        temp=info.mysql.ExecQueryGetList(sql)[0]
         print temp
         year = list(str(datetime.datetime.now().year))
         nextyear =list(str(datetime.datetime.now().year + 1))
