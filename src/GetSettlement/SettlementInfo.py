@@ -26,6 +26,7 @@ def main(startdate, mysplider,info):
 if __name__=="__main__":
     info=InfoApi()
     info.GetDbHistoryConnect()
+    info.Get_Msplider()
 
     t = TradingDay(info)
     startdate = datetime.datetime.strptime("20190114", "%Y%m%d")
