@@ -12,6 +12,7 @@ class setting:
          self.ExchangeList=['CZCE','DCE','SHFE','CFFEX']
          self.Website="http://www.%s.com.cn"
          self.Holiday=dict()
+         self.lastCode = {"eg": 'eg1906', "sp": 'sp1906', "wr": 'wr1903'}
 
 
      def HistoryDbInfo(self):
