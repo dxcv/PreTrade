@@ -11,18 +11,26 @@ from utils.sqlServer import *
 from utils.BasicAPI import *
 from  data.setting import *
 from utils.Mysplider import *
+import calendar
 
 
 class InfoApi:
     def __init__(self):
-        self.basicapi=BasicAPI()
         self.HistoryDbconn=None
         self.StaticDbconn=None
         self.setting=setting()
-        self.mysplider=MySplider()
         self.mysql=self.GetDbHistoryConnect()
         self.mysql1=None
+        self.mysplider = None
+        self.basicapi = None
 
+    def Get_Msplider(self):
+        self.mysplider=MySplider()
+        return self.mysplider
+
+    def Get_BasicApi(self):
+        self.basicapi=BasicAPI()
+        return self.basicapi
 
     def GetDbHistoryDataAccount(self):
         """
@@ -159,19 +167,29 @@ class InfoApi:
         if self.HistoryDbconn is None:
             self.GetDbHistoryConnect()
         templist=self.HistoryDbconn.ExecQuery(sql)
-        return self.basicapi.GetResultList(templist)
+        return self.Get_BasicApi().GetResultList(templist)
+
+    def IsInstrumentMonth(self,Tradecode,month):
+        """判断month是否为该品种的合约月份，格式:直接传入月份01/02/.../10/11/12"""
+        pass
+        sql="""select [Delivemonth] from [PreTrade].[dbo].[StandContract] where [TradeCode]='%s'"""%Tradecode
+        temp=self.mysql.ExecQueryGetList(sql)
+        if temp.find("|")!=-1:
+            temp=temp.split("|")
+            temp = map(lambda x: x.zfill(2), temp)
+            if month  in temp:
+                return True
+        elif temp.find("&"):
+            pass
+
 
     def GetAllProduct(self):
         """获取所有的期货品种名称"""
         sql="select [InstrumentName]   FROM [PreTrade].[dbo].[ContractCode] order by ExchangeID"
         mysql=self.GetDbHistoryConnect()
         templist=mysql.ExecQuery(sql)
-        return self.basicapi.GetResultList(templist)
+        return self.Get_BasicApi().GetResultList(templist)
 
     def GetChineseToEnglish(self):
         temp={"交易所":"ExchangeID","交易代码":"InstrumentCode","最小变动价位":"PriceTick","合约乘数":"VolumeMultiple","合约月份":"InstrumentMonth","最低交易保证金":"MinMargin","最后交易日":""}
-
-
-
-
 

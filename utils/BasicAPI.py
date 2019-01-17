@@ -6,7 +6,8 @@
 """
 import re
 import datetime
-from utils.InfoApi import *
+from utils.TradingDay.EndDate import *
+from data.setting import *
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -15,6 +16,11 @@ sys.setdefaultencoding('utf8')
 class BasicAPI:
     def __init__(self):
         self.data=None
+        self.enddate=None
+
+    def Get_EndDate(self, info):
+        self.enddate = EndDate(info)
+        return self.enddate
 
     def GetResultList(self, result):
         """
@@ -23,9 +29,12 @@ class BasicAPI:
         :return:
         """
         temp = []
+        col=[]
         for i in result:
             for j in range(len(i)):
-                temp.append(str(i[j].encode("utf-8")).strip())
+                col.append(str(i[j].encode("utf-8")).strip())
+            temp.append(col)
+            col=[]
         return temp
 
     def StrinList(self,str,tempList):
@@ -60,6 +69,7 @@ class BasicAPI:
 
     def GetInstrumentYearMonth(self,InstrumentID,ExchangeID):
         """根据合约以及交易所命名规则获取合约的年，月"""
+
         code = str(re.match(r"\D+", InstrumentID).group())
         InstrumentID = list(InstrumentID.replace(code, ""))
         if ExchangeID=="CZCE":
@@ -78,29 +88,112 @@ class BasicAPI:
             year="".join(now[:2])+year
         return  year,month
 
+    def BinarySeach(self,left,right,num,tempList):
+        """二分查找算法进化形式"""
+        while left<=right:
+            mid = int((right + left) / 2)
+            if tempList[mid]==num:
+                return tempList.index(num)
+            elif tempList[mid]>num:
+                return self.BinarySeach(left,mid-1,num,tempList)
+            elif tempList[mid]<num:
+                return self.BinarySeach(mid+1,right,num,tempList)
+        return left
+
+    def GetContinueNumsmonth(self,info,TradeCode,num):
+        """当前月份开始的num个连续该品种的合约"""
+        col=[]
+        temp=map(lambda x: str(x).zfill(2), range(1, 13))
+        for i in range(num+1):
+            if i + temp.index(self.month) < min(num+1,12):
+                col.append(TradeCode + self.year + temp[(i + temp.index(self.month)) % len(temp)])
+            else:
+                col.append(TradeCode + self.nextyear + temp[(i + temp.index(self.month)) % len(temp)])
+
+        if self.InstrumentIdIsTrading(info,col[0]):
+            return col[:-1]
+        else:
+            return col[1:]
+
+    def InstrumentIdIsTrading(self,info,InstrumentID):
+        """判断InstrumentId是否正在交易"""
+        now=datetime.datetime.now().strftime("%Y%m%d")
+        a,b=self.Get_EndDate(info).GetEndDate(InstrumentID)
+        return False if a<now else True
 
     def GetInstrumentMonth(self,info,TradeCode,ExchangeID):
         """输入交易代码，即可查询该品种最近正在交易的合约"""
+        self.lastCode =setting().lastCode
         sql="""select Delivemonth from [PreTrade].[dbo].[StandContract] where [TradeCode]='%s'"""%TradeCode
         temp=info.mysql.ExecQueryGetList(sql)[0]
-        print temp
-        year = list(str(datetime.datetime.now().year))
-        nextyear =list(str(datetime.datetime.now().year + 1))
+        col = []
+        self.year = list(str(datetime.datetime.now().year))
+        self.nextyear =list(str(datetime.datetime.now().year + 1))
         if ExchangeID=='CZCE':
-            year=year[-1:]
-            nextyear = nextyear[-1:]
+            self.year="".join(self.year[-1:]).strip()
+            self.nextyear = "".join(self.nextyear[-1:]).strip()
         else:
-            year="".join(year[2:]).zfill(2)
-            nextyear = "".join(nextyear[2:]).zfill(2)
-        month=str(datetime.datetime.now().month).zfill(2)
-        if  temp.find("|")!=-1:
+            self.year="".join(self.year[2:]).zfill(2)
+            self.nextyear = "".join(self.nextyear[2:]).zfill(2)
+        self.month=str(datetime.datetime.now().month).zfill(2)
+        if  temp.find("|")!=-1 and temp.find("&")==-1:
             temp=temp.split("|")
-            temp = map(lambda x: x.zfill(2), temp)
-        col=[]
-        for i in range(len(temp)):
-            if i+temp.index(month)<len(temp):
-                col.append(TradeCode+year+temp[(i+temp.index(month))%len(temp)])
+            tempdata = map(lambda x: x.zfill(2), temp)
+            if self.month in tempdata and not  self.InstrumentIdIsTrading(info,str(TradeCode + self.year +self.month).strip()):
+                delta=1
             else:
-                col.append(TradeCode+nextyear+temp[(i + temp.index(month)) % len(temp)])
+                delta=0
+            for i in range(len(tempdata)):
+                if i+delta<len(tempdata):
+                    col.append(TradeCode+self.year+tempdata[(i+delta)%len(tempdata)])
+                else:
+                    col.append(TradeCode+self.nextyear+tempdata[(i + delta) % len(tempdata)])
+        elif temp.find("&")!=-1:
+            temp = temp.split("&")
+            temp1=temp[1]
+            continuemonth=self.GetContinueNumsmonth(info,TradeCode,int(temp[0]))
+            if temp1.find("/")!=-1:
+                temp1=temp1.split("/")
+                tempList=self.GetLastNumMonth(int(temp1[0]),ExchangeID)
+                tempList=filter(lambda x:int("".join(list(x)[-2:]))%int(temp1[1])==0,tempList[tempList.index("".join(list(continuemonth[-1])[-4:]))+1:])
+                tempList=map(lambda x:TradeCode+x,tempList)
+                tempList=continuemonth+tempList
+                return tempList
+            elif temp1.find("*")!=-1:
+                temp1 = temp1.split("*")
+                tempList = self.GetLastNumMonth(int(temp1[0])*int(temp1[1])+int(temp[0]), ExchangeID)
+                tempList = filter(lambda x: int("".join(list(x)[-2:])) % int(temp1[1]) == 0,
+                                  tempList[tempList.index("".join(list(continuemonth[-1])[-4:])) + 1:])
+                tempList = map(lambda x: TradeCode + x, tempList)
+                col= continuemonth + tempList[:int(temp1[0])]
+                return col
+
+        elif temp.find("*")!=-1:
+            temp = temp.split("*")
+            monthList=["03","06","09","12"]
+            index=self.BinarySeach(0,len(monthList)-1,self.month,monthList)
+            for i in range(int(temp[0])):
+                if i + index < len(monthList):
+                    col.append(TradeCode + self.year + monthList[i+index])
+                else:
+                    col.append(TradeCode + self.nextyear +monthList[i+index])
+        if self.lastCode.has_key(TradeCode):
+            col=col[col.index(self.lastCode[TradeCode]):]
+        return col
+
+
+    def GetLastNumMonth(self,num,ExchangeID):
+        """获取最近num个月份"""
+        col=[]
+        now=datetime.datetime.now()
+        for i in range(num):
+            year = now.year
+            month = now.month
+            days_num = calendar.monthrange(int(year), int(month))[1]
+            now=now+datetime.timedelta(days=days_num)
+            if ExchangeID=='CZCE':
+                col.append(now.strftime("%Y%m%d")[3:6].zfill(4))
+            else:
+                col.append(now.strftime("%Y%m%d")[2:6].zfill(4))
         return col
 
