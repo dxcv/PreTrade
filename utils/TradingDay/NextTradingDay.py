@@ -5,8 +5,7 @@
 输入一个日期获取到下一个交易日
 最下方使用事例
 """
-
-from utils.InfoApi import *
+import datetime
 
 sql="""
     select * from [PreTrade].[dbo].[HistoryNoTdCalendar] where NoTradingDay=%s
@@ -16,7 +15,7 @@ class TradingDay:
     def __init__(self,info):
         self.info=info
         self.mysql =self.info.GetDbHistoryConnect()
-        self.Holiday=InfoApi().GetHolidayList()
+        self.Holiday=self.info.GetHolidayList()
 
     def NextTradingDay(self,day,mark):
         """
@@ -66,23 +65,19 @@ class TradingDay:
                :return:
                flag  1      下一个交易日          0  上一个交易日
         """
-        HolidayFlag=False
-        weekFlag=False
+        HolidayFlag=True
+        weekFlag=True
         day = str(day).strip()
-        while  not HolidayFlag and  not weekFlag :
+        while  HolidayFlag or  weekFlag :
             day, falg = NextDay(day) if mark else PreviousDay(day)
-            while day in self.Holiday:
-                day, falg = NextDay(day) if mark else PreviousDay(day)
-                weekFlag=False
-                HolidayFlag=False
-            else:
-                weekFlag=True
-            while datetime.datetime.strptime(day, "%Y%m%d").weekday() == 6 or datetime.datetime.strptime(day,"%Y%m%d").weekday() == 5:
-                day, falg = NextDay(day) if mark else PreviousDay(day)
-                HolidayFlag=False
-                weekFlag=False
-            else:
+            if  day in self.Holiday:
                 HolidayFlag=True
+            else:
+                HolidayFlag=False
+            if datetime.datetime.strptime(day, "%Y%m%d").weekday() == 6 or datetime.datetime.strptime(day,"%Y%m%d").weekday() == 5:
+                weekFlag=True
+            else:
+                weekFlag=False
         return day
 
 
