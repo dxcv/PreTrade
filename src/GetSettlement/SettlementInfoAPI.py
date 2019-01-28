@@ -300,7 +300,7 @@ def GetDCEFutureDayInfo(TradingDay, info):
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36',
         'Accept-Language': 'zh-CN,zh;q=0.9',
-        'Cookie': 'JSESSIONID=2BA341620FAC3C7C35B87BFBED295923; WMONID=j1TJsMZrARA; Hm_lvt_a50228174de2a93aee654389576b60fb=1541585541,1541748645,1542011310,1542013097; Hm_lpvt_a50228174de2a93aee654389576b60fb=1542013110',
+        'Cookie': 'JSESSIONID=8E650BA1F3AFEAB1611F8ADC6C186BD1; WMONID=j1TJsMZrARA; Hm_lvt_a50228174de2a93aee654389576b60fb=1547791080,1548045741,1548146303,1548147105; sssssss=516c92f7sssssss_516c92f7',
         'Host': 'www.dce.com.cn',
         'Pragma': 'no-cache',
         'Upgrade-Insecure-Requests': '1'
