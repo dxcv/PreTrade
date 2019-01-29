@@ -4,6 +4,10 @@
 """
 四大交易所合约的信息表，
 """
+import sys
+import os
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
 from utils.TradingDay.NextTradingDay import *
 from utils.InfoApi import  *
 from utils.Mysplider import *

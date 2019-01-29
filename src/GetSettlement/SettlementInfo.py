@@ -5,8 +5,10 @@
 郑商所，中金所，上期所，大商所，结算信息，汇总
 主要包括收盘价，前一天结算价，当天成交量，当天成交金额，最高价，最低价
 """
-
-from utils.TradingDay.NextTradingDay import *
+import sys
+import os
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
 from utils.InfoApi import *
 from SettlementInfoAPI import *
 from utils.Mysplider import *

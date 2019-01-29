@@ -5,6 +5,10 @@
 4大交易所手续费写入一个数据库中
 """
 
+import sys
+import os
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
 from utils.TradingDay.NextTradingDay import *
 from utils.InfoApi import *
 from SettlementDetailAPI import *
