@@ -2,7 +2,10 @@
 # @Time    : 2018/11/23 8:33
 # @Author  : ZouJunLin
 """计算日平均成交量"""
-import sys,datetime
+import sys
+import os
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
 reload(sys)
 from utils.TradingDay.NextTradingDay import *
 from utils.Mysplider import *
@@ -10,6 +13,7 @@ from ComputerAPI import *
 from utils.InfoApi import *
 from utils.sqlServer import *
 from tqdm import tqdm
+from progressbar import *
 
 """查询当天交易的所有合约"""
 Instrumentsql="""
@@ -30,7 +34,8 @@ def ComputerAvgVol():
     templist=IsExistData(Instrumentsql%TradingDay,info)
 
     sqllist=[]
-    for i in tqdm(templist):
+    progress = ProgressBar()
+    for i in progress(templist):
         #Instrumentlist.append(str(i[0]).encode("utf-8"))
         InstrumentID=str(i[0]).encode("utf-8").strip()
         """for each InstrumentID"""
