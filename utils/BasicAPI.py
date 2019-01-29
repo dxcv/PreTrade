@@ -62,7 +62,7 @@ class BasicAPI:
         for i in templist:
             length=len(i)
             while j<length:
-                print i[j],"\t",
+                print i[j],"|||",j,"\t\t",
                 j+=1
             j=0
             print "\n"
@@ -74,11 +74,18 @@ class BasicAPI:
         InstrumentID = list(InstrumentID.replace(code, ""))
         if ExchangeID=="CZCE":
             year=InstrumentID[0]
-            month=InstrumentID[1:3]
-            year = "".join(year)
-            month = "".join(month)
-            now = list(str(datetime.datetime.now().year))
-            year = "".join(now[:3]) + year
+            if year!='0':
+                month=InstrumentID[1:3]
+                year = "".join(year)
+                month = "".join(month)
+                now = list(str(datetime.datetime.now().year))
+                year = "".join(now[:3]) + year
+            else:
+                month = InstrumentID[1:3]
+                year = "".join(year)
+                month = "".join(month)
+                now = list(str(int(datetime.datetime.now().year)+1))
+                year = "".join(now[:3]) + year
         else:
             year = InstrumentID[0:2]
             month=InstrumentID[2:4]
@@ -100,47 +107,49 @@ class BasicAPI:
                 return self.BinarySeach(mid+1,right,num,tempList)
         return left
 
-    def GetContinueNumsmonth(self,info,TradeCode,num):
+    def GetContinueNumsmonth(self,info,TradeCode,num,now):
         """当前月份开始的num个连续该品种的合约"""
         col=[]
         temp=map(lambda x: str(x).zfill(2), range(1, 13))
         for i in range(num+1):
-            if i + temp.index(self.month) < min(num+1,12):
+            if i + temp.index(self.month) < len(temp):
                 col.append(TradeCode + self.year + temp[(i + temp.index(self.month)) % len(temp)])
             else:
                 col.append(TradeCode + self.nextyear + temp[(i + temp.index(self.month)) % len(temp)])
 
-        if self.InstrumentIdIsTrading(info,col[0]):
+        if self.InstrumentIdIsTrading(info,col[0],now):
             return col[:-1]
         else:
             return col[1:]
 
-    def InstrumentIdIsTrading(self,info,InstrumentID):
+    def InstrumentIdIsTrading(self,info,InstrumentID,now):
         """判断InstrumentId是否正在交易"""
-        now=datetime.datetime.now().strftime("%Y%m%d")
+        now=now.strftime("%Y%m%d")
         a,b=self.Get_EndDate(info).GetEndDate(InstrumentID)
         return False if a<now else True
 
-    def GetInstrumentMonth(self,info,TradeCode,ExchangeID):
+    def GetInstrumentMonth(self,info,TradeCode,ExchangeID,now):
         """输入交易代码，即可查询该品种最近正在交易的合约"""
         self.lastCode =setting().lastCode
         sql="""select Delivemonth from [PreTrade].[dbo].[StandContract] where [TradeCode]='%s'"""%TradeCode
         temp=info.mysql.ExecQueryGetList(sql)[0]
         col = []
-        self.year = list(str(datetime.datetime.now().year))
-        self.nextyear =list(str(datetime.datetime.now().year + 1))
+        self.year = list(str(now.year))
+        self.nextyear =list(str(now.year + 1))
         if ExchangeID=='CZCE':
             self.year="".join(self.year[-1:]).strip()
             self.nextyear = "".join(self.nextyear[-1:]).strip()
         else:
             self.year="".join(self.year[2:]).zfill(2)
             self.nextyear = "".join(self.nextyear[2:]).zfill(2)
-        self.month=str(datetime.datetime.now().month).zfill(2)
+        self.month=str(now.month).zfill(2)
         if  temp.find("|")!=-1 and temp.find("&")==-1:
             temp=temp.split("|")
             tempdata = map(lambda x: x.zfill(2), temp)
-            if self.month in tempdata and not  self.InstrumentIdIsTrading(info,str(TradeCode + self.year +self.month).strip()):
-                delta=1
+            if self.month in tempdata :
+                delta=tempdata.index(self.month)
+                if not self.InstrumentIdIsTrading(info,str(TradeCode + self.year +self.month).strip(),now):
+                    delta=delta+1
             else:
                 delta=0
             for i in range(len(tempdata)):
@@ -151,7 +160,7 @@ class BasicAPI:
         elif temp.find("&")!=-1:
             temp = temp.split("&")
             temp1=temp[1]
-            continuemonth=self.GetContinueNumsmonth(info,TradeCode,int(temp[0]))
+            continuemonth=self.GetContinueNumsmonth(info,TradeCode,int(temp[0]),now)
             if temp1.find("/")!=-1:
                 temp1=temp1.split("/")
                 tempList=self.GetLastNumMonth(int(temp1[0]),ExchangeID)
