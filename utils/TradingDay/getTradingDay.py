@@ -3,6 +3,11 @@
 # @Author  : ZouJunLin
 """交易日获取，并且写入交易日数据库"""
 
+import sys
+import os
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
+reload(sys)
 from NextTradingDay import *
 from utils.InfoApi import *
 from utils.sqlServer import *

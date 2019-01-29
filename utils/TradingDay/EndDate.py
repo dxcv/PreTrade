@@ -5,13 +5,13 @@
 from utils.InfoApi import *
 import re,sys
 reload(sys)
-from utils.TradingDay.NextTradingDay  import *
-from utils.BasicAPI import *
+from utils.TradingDay.NextTradingDay  import TradingDay
 import calendar
 
 class EndDate():
-    def __init__(self):
-        self.info=InfoApi()
+    def __init__(self,info):
+        self.info=info
+        self.basicapi=self.info.Get_BasicApi()
         self.nextTraday=TradingDay(self.info)
         self.holiday=self.info.GetHolidayList()
         self.mysql=self.info.GetDbHistoryConnect()
@@ -41,7 +41,7 @@ class EndDate():
         EndDatetemp=temp[0][0].encode("utf-8").split("|")
         EndDeliveDatetemp=temp[0][1].encode("utf-8").split("|")
         self.ExchangeID=temp[0][2].encode("utf-8")
-        year,month=BasicAPI().GetInstrumentYearMonth(InstrumentID,self.ExchangeID)
+        year,month=self.basicapi.GetInstrumentYearMonth(InstrumentID,self.ExchangeID)
         self.YearMonth=year+month
         self.tempday=year+month+"01"
         days_num = calendar.monthrange(int(year), int(month))[1]
@@ -68,15 +68,21 @@ class EndDate():
             EndDate = [day for week in monthcal for day in week if \
                             day.weekday() == calendar.FRIDAY and \
                             day.month == int(month)][int(EndDatetemp[1])-1].strftime("%Y%m%d")
-
+        if not self.nextTraday.IsTradingDayFuture(EndDate):
+            EndDate=self.nextTraday.NextTradingDayFuture(EndDate,1)
         EndDeliveDate = self.GetEndDeliveDateAPI(EndDeliveDatetemp[0:2], EndDate)
         if len(EndDeliveDatetemp)==4:
             EndDeliveDate1=self.GetEndDeliveDateAPI(EndDeliveDatetemp[2:4],EndDate)
-            EndDeliveDate=[EndDeliveDate,EndDeliveDate1]
+            EndDeliveDate=EndDeliveDate+"/"+EndDeliveDate1
 
         return EndDate,EndDeliveDate
 
 
-if __name__=='__main__':
-    EndDate,EndDeliveDate=EndDate().GetEndDate("m1901")
-    print EndDate,EndDeliveDate
+    def GetStartDay(self,InstrumentID):
+        """上一个合约的最后交易日第二天上新合约"""
+        EndDate=self.GetEndDate(InstrumentID)[0]
+        return self.nextTraday.NextTradingDayFuture(EndDate,1)
+
+# if __name__=='__main__':
+#     EndDate,EndDeliveDate=EndDate().GetEndDate("m1901")
+#     print EndDate,EndDeliveDate

@@ -6,6 +6,11 @@
 执行当天之前的从官网抓取的，因为抓取的数据有点问题，所以还要排除周末周日和节假日
 
 """
+import sys
+import os
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
+reload(sys)
 import requests
 from utils.sqlServer import *
 import datetime
