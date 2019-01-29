@@ -194,7 +194,7 @@ def GetCZCEOptionDayInfo(TradingDay, info):
     tradingday = TradingDay.strftime("%Y-%m-%d")
     for i in datalist[1:-1]:
         temp = list(i)
-        if not (temp[0] == "小计" or temp[0] == "总计"or temp[0] == "SR合计" or temp[0]=="品种代码"):
+        if not (temp[0] == "小计" or temp[0] == "总计"or str("".join(temp)).find("合计")!=-1 or temp[0]=="品种代码"):
             temp.insert(0, tradingday)
             temp.pop(15)
             temp.insert(4, 0)
@@ -234,7 +234,7 @@ def GetCZCEFutureDayInfo(TradingDay,info):
     tradingday = TradingDay.strftime("%Y-%m-%d")
     for i in datalist[1:-1]:
         temp = list(i)
-        if not (temp[0] == "小计" or temp[0] == "总计" or temp[0]=="品种月份"):
+        if not (temp[0] == "小计" or temp[0] == "总计" or temp[0]=="品种月份" or str("".join(temp)).find("合计")!=-1):
             temp.insert(0, tradingday)
             temp.pop(15)
             temp.insert(4,1)

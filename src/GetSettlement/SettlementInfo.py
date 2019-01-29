@@ -29,7 +29,7 @@ if __name__=="__main__":
     info.Get_Msplider()
 
     t = TradingDay(info)
-    startdate = datetime.datetime.strptime("20190114", "%Y%m%d")
+    startdate = datetime.datetime.strptime("20190125", "%Y%m%d")
     enddate = datetime.datetime.now()
     mysplider = info.mysplider
 
