@@ -102,7 +102,7 @@ class InfoApi:
         sql="select [VolumeMultiple],[ProductName],[PriceTick] from [PreTrade].[dbo].[StandContract] where [TradeCode]='%s'"%TradeCode
         self.mysql = self.GetDbHistoryConnect()
         templist = self.mysql.ExecQuery(sql)
-        return self.basicapi.GetResultList(templist)
+        return self.basicapi.GetResultList(templist)[0]
 
     def GetAllExchange(self):
         """
