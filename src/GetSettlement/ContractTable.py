@@ -27,6 +27,8 @@ def main(startdate, mysplider):
 
 if __name__=="__main__":
     info=InfoApi()
+    info.Get_Msplider()
+    info.Get_BasicApi()
     t = TradingDay(info)
     startdate = datetime.datetime.now()
     enddate = datetime.datetime.now()
