@@ -182,6 +182,15 @@ class InfoApi:
         elif temp.find("&"):
             pass
 
+    def GetFutureInstrumentLits(self,a):
+        """获取tradingday当日的数据库里面的SettlementInfo的交易的合约"""
+        a=a[:4].zfill(4) + "-" + a[5:6].zfill(2) + "-" + a[-2:].zfill(2)
+        sql="""select [InstrumentID] from [PreTrade].[dbo].[SettlementInfo] where TradingDay='%s'  and [IsFuture]='1' order by ExchangeID"""%a
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        tlist=self.mysql.ExecQueryGetList(sql)
+        return tlist
+
 
     def GetAllProduct(self):
         """获取所有的期货品种名称"""

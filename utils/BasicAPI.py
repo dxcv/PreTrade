@@ -206,3 +206,17 @@ class BasicAPI:
                 col.append(now.strftime("%Y%m%d")[2:6].zfill(4))
         return col
 
+    def TwoList2Dict(self,tlist):
+        """双层list转换成key"""
+        tkey=dict()
+        col=tlist[0][1:]
+        for i in tlist[1:]:
+            if not i[0] in tkey.keys():
+                tkey[i[0]]=dict()
+            for j in  range(len(i[1:])):
+                if not col[j] in tkey[i[0]].keys():
+                    tkey[i[0]][col[j]] = dict()
+                tkey[i[0]][col[j]]=i[j+1]
+        for i in tkey.keys():
+            sorted(tkey[i].keys(), lambda x, y: cmp(x[1], y[1]))
+        return tkey
