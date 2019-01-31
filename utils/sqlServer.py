@@ -105,26 +105,22 @@ class Mysql:
         """
         self.GetConnect()
         self.cur.execute(sql%list1)
-
         self.conn.commit()
 
-
-
-    # def ExecmanysNonQuery(self,sql,list1):
-    #     """
-    #     插入sql语句集，一次执行多个sql查询语句
-    #     :param sqllist:
-    #     :return:
-    #     """
-    #
-    #    # print type(list),list
-    #     #print list
-    #     cur = self.__GetConnect()
-    #     #cur.execute(sql,list)
-    #     for i in list1:
-    #         print sql % i
-    #         cur.execute(sql%i)
-    #
+    def UpdateMarginExample(self, templist,num):
+        """update  MarginExample 数据表"""
+        self.GetConnect()
+        if len(templist)==0:
+            return
+        delsql="delete from [PreTrade].[dbo].[MarginExample] where InstrumentId ='%s'"
+        isExist="select InstrumentID from [PreTrade].[dbo].[MarginExample] where [TradingDay]='%s'"
+        insertsql="INSERT INTO [dbo].[MarginExample] ([TradingDay],[InstrumentID],[ExchangeID],Margintation"+str(num).strip()+") VALUES('%s','%s','%s','%s')"
+        isExist=self.ExecQueryGetList(isExist%templist[0][0])
+        for i in templist:
+            if i[1] in isExist:
+                self.cur.execute(delsql%i[1])
+            self.cur.execute(insertsql%(tuple(i)))
+        self.conn.commit()
 
 
     def GetResultList(self,result):
