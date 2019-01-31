@@ -118,13 +118,15 @@ class InfoApi:
         tradingDay=datetime.datetime.strptime(tradingDay,"%Y%m%d")
         if self.mysql is None:
             self.GetDbHistoryConnect()
-        tempfuture=[]
+        tempfuture={}
         templist = self.mysql.ExecQuery("select [TradeCode],[ExchangeID],[ProductName] from  [PreTrade].[dbo].[StandContract] order by ExchangeID")
         templist = BasicAPI().GetResultList(templist)
         for i in templist:
             InstrumentId = i[0]
             ExchangeId = i[1]
-            tempfuture+=self.Get_BasicApi().GetInstrumentMonth(self, InstrumentId, ExchangeId, tradingDay)
+            temp=self.Get_BasicApi().GetInstrumentMonth(self, InstrumentId, ExchangeId, tradingDay)
+            for i in temp:
+                tempfuture[i]=ExchangeId
         return tempfuture
 
     def GetDetailByInstrumentID(self,instrumentID,ExchangeID):
@@ -244,4 +246,3 @@ class InfoApi:
 
     def GetChineseToEnglish(self):
         temp={"交易所":"ExchangeID","交易代码":"InstrumentCode","最小变动价位":"PriceTick","合约乘数":"VolumeMultiple","合约月份":"InstrumentMonth","最低交易保证金":"MinMargin","最后交易日":""}
-
