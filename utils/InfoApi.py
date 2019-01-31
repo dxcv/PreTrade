@@ -104,12 +104,52 @@ class InfoApi:
         templist = self.mysql.ExecQuery(sql)
         return self.basicapi.GetResultList(templist)[0]
 
+    def GetAnotherInstrumentByInstrument(self,instrumentID):
+        """获取另一个正在交易的合约，去你补部分数据缺失的问题"""
+        a= str(re.match(r"\D+", instrumentID).group())
+        sql="select top 2 [InstrumentID] from [PreTrade].[dbo].[SettlementInfo] where InstrumentID like'"+a+"%'  and [IsFuture]='1' order by TradingDay desc"
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        templist = self.mysql.ExecQueryGetList(sql)
+        return templist[1] if templist[0]==instrumentID else templist[0]
+
+    def GetAllTradeInstrumentByTradingDay(self,tradingDay):
+        """获取某一个交易日的所有交易的合约"""
+        tradingDay=datetime.datetime.strptime(tradingDay,"%Y%m%d")
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        tempfuture=[]
+        templist = self.mysql.ExecQuery("select [TradeCode],[ExchangeID],[ProductName] from  [PreTrade].[dbo].[StandContract] order by ExchangeID")
+        templist = BasicAPI().GetResultList(templist)
+        for i in templist:
+            InstrumentId = i[0]
+            ExchangeId = i[1]
+            tempfuture+=self.Get_BasicApi().GetInstrumentMonth(self, InstrumentId, ExchangeId, tradingDay)
+        return tempfuture
+
+    def GetDetailByInstrumentID(self,instrumentID,ExchangeID):
+        """通过合约代码获取code,以及年月"""
+        code = str(re.match(r"\D+", instrumentID).group())
+        num = str(instrumentID).strip().replace(code, "")
+        if ExchangeID=='CZCE':
+            nyear=datetime.datetime.now().year
+            if str(nyear)[-1:]=='9':
+                if num[:1]=='0':
+                    num=str(nyear+1)[2:3]+str(num)
+                else:
+                    num=str(nyear)[2:3]+str(num)
+        return code,num
+
+
+
+
     def GetAllExchange(self):
         """
         获取所有的交易所代码
         :return:
         """
         return self.setting.ExchangeList
+
 
     def GetExchangeHeader(self,ExchangeID):
         """
@@ -184,12 +224,15 @@ class InfoApi:
 
     def GetFutureInstrumentLits(self,a):
         """获取tradingday当日的数据库里面的SettlementInfo的交易的合约"""
+        tempdict = {}
         a=a[:4].zfill(4) + "-" + a[5:6].zfill(2) + "-" + a[-2:].zfill(2)
-        sql="""select [InstrumentID] from [PreTrade].[dbo].[SettlementInfo] where TradingDay='%s'  and [IsFuture]='1' order by ExchangeID"""%a
+        sql="""select [InstrumentID],[ExchangeID] from [PreTrade].[dbo].[SettlementInfo] where TradingDay='%s'  and [IsFuture]='1' order by ExchangeID"""%a
         if self.mysql is None:
             self.GetDbHistoryConnect()
-        tlist=self.mysql.ExecQueryGetList(sql)
-        return tlist
+        tlist=self.mysql.ExecQuery(sql)
+        for i in tlist:
+            tempdict[i[0].encode("utf-8")]=i[1].encode("utf-8")
+        return tempdict
 
 
     def GetAllProduct(self):

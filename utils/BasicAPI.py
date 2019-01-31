@@ -163,14 +163,14 @@ class BasicAPI:
             continuemonth=self.GetContinueNumsmonth(info,TradeCode,int(temp[0]),now)
             if temp1.find("/")!=-1:
                 temp1=temp1.split("/")
-                tempList=self.GetLastNumMonth(int(temp1[0]),ExchangeID)
+                tempList=self.GetLastNumMonth(int(temp1[0]),ExchangeID,now)
                 tempList=filter(lambda x:int("".join(list(x)[-2:]))%int(temp1[1])==0,tempList[tempList.index("".join(list(continuemonth[-1])[-4:]))+1:])
                 tempList=map(lambda x:TradeCode+x,tempList)
                 tempList=continuemonth+tempList
                 return tempList
             elif temp1.find("*")!=-1:
                 temp1 = temp1.split("*")
-                tempList = self.GetLastNumMonth(int(temp1[0])*int(temp1[1])+int(temp[0]), ExchangeID)
+                tempList = self.GetLastNumMonth(int(temp1[0])*int(temp1[1])+int(temp[0]), ExchangeID,now)
                 tempList = filter(lambda x: int("".join(list(x)[-2:])) % int(temp1[1]) == 0,
                                   tempList[tempList.index("".join(list(continuemonth[-1])[-4:])) + 1:])
                 tempList = map(lambda x: TradeCode + x, tempList)
@@ -191,10 +191,9 @@ class BasicAPI:
         return col
 
 
-    def GetLastNumMonth(self,num,ExchangeID):
+    def GetLastNumMonth(self,num,ExchangeID,now):
         """获取最近num个月份"""
         col=[]
-        now=datetime.datetime.now()
         for i in range(num):
             year = now.year
             month = now.month
