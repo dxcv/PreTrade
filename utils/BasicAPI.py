@@ -176,7 +176,6 @@ class BasicAPI:
                 tempList = map(lambda x: TradeCode + x, tempList)
                 col= continuemonth + tempList[:int(temp1[0])]
                 return col
-
         elif temp.find("*")!=-1:
             temp = temp.split("*")
             monthList=["03","06","09","12"]

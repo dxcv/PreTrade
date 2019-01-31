@@ -114,7 +114,7 @@ class InfoApi:
         return templist[1] if templist[0]==instrumentID else templist[0]
 
     def GetAllTradeInstrumentByTradingDay(self,tradingDay):
-        """获取某一个交易日的所有交易的合约"""
+        """获取某一个交易日的所有正在交易的合约"""
         tradingDay=datetime.datetime.strptime(tradingDay,"%Y%m%d")
         if self.mysql is None:
             self.GetDbHistoryConnect()
