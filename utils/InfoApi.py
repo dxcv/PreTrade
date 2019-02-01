@@ -25,6 +25,7 @@ class InfoApi:
         self.basicapi = None
         """to save tradingDay's Instrument """
         self.tradingDayInstrument=dict()
+        self.NameCode=dict()
 
     def Get_Msplider(self):
         self.mysplider=MySplider()
@@ -136,8 +137,15 @@ class InfoApi:
             self.tradingDayInstrument[tradingDay]=tempfuture
             return tempfuture
 
-    def CodeByproductName(self):
-        """Get ProductNme by ProductCode"""
+    def GetCodeByName(self,name):
+        """Get ProductCode by ProductNme"""
+        sql="select [InstrumentCode],[InstrumentName] from [ContractCode]"
+        if len(self.NameCode)==0:
+            self.GetDbHistoryConnect()
+            templist=self.mysql.ExecQuery(sql)
+            for i in templist:
+                self.NameCode[i[1].encode("utf-8")]=i[0].encode("utf-8")
+        return self.NameCode[name]
 
     def GetDetailByInstrumentID(self,instrumentID,ExchangeID):
         """通过合约代码获取code,以及年月"""
