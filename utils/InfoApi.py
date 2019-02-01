@@ -108,7 +108,7 @@ class InfoApi:
 
     def GetAnotherInstrumentByInstrument(self,instrumentID):
         """获取另一个正在交易的合约，去你补部分数据缺失的问题"""
-        a= str(instrumentID).strip()[:3]
+        a= str(instrumentID).strip()[:2]
         sql="select top 2 [InstrumentID] from [PreTrade].[dbo].[SettlementInfo] where InstrumentID like'"+a+"%'  and [IsFuture]='1' order by TradingDay desc"
         if self.mysql is None:
             self.GetDbHistoryConnect()
