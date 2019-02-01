@@ -115,11 +115,11 @@ class Mysql:
         # delsql="delete from [PreTrade].[dbo].[MarginExample] where InstrumentId ='%s'"
         isExist="select InstrumentID from [PreTrade].[dbo].[MarginExample] where [TradingDay]='%s'"
         insertsql="INSERT INTO [dbo].[MarginExample] ([TradingDay],[InstrumentID],[ExchangeID],Margintation"+str(num).strip()+") VALUES('%s','%s','%s','%s')"
-        updatesql="update MarginExample set Margintation"+str(num).strip()+"='%s' where InstrumentId ='%s' "
+        updatesql="update MarginExample set Margintation"+str(num).strip()+"='%s' where InstrumentId ='%s'and  TradingDay='%s'"
         isExist=self.ExecQueryGetList(isExist%templist[0][0])
         for i in templist:
             if i[1] in isExist:
-                self.cur.execute(updatesql%(i[3],i[1]))
+                self.cur.execute(updatesql%(i[3],i[1],i[0]))
             else:
                 self.cur.execute(insertsql%(tuple(i)))
         self.conn.commit()
