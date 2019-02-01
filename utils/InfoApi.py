@@ -23,6 +23,8 @@ class InfoApi:
         self.mysql1=None
         self.mysplider = None
         self.basicapi = None
+        """to save tradingDay's Instrument """
+        self.tradingDayInstrument=dict()
 
     def Get_Msplider(self):
         self.mysplider=MySplider()
@@ -106,7 +108,7 @@ class InfoApi:
 
     def GetAnotherInstrumentByInstrument(self,instrumentID):
         """获取另一个正在交易的合约，去你补部分数据缺失的问题"""
-        a= str(re.match(r"\D+", instrumentID).group())
+        a= str(instrumentID).strip()[:3]
         sql="select top 2 [InstrumentID] from [PreTrade].[dbo].[SettlementInfo] where InstrumentID like'"+a+"%'  and [IsFuture]='1' order by TradingDay desc"
         if self.mysql is None:
             self.GetDbHistoryConnect()
@@ -115,19 +117,27 @@ class InfoApi:
 
     def GetAllTradeInstrumentByTradingDay(self,tradingDay):
         """获取某一个交易日的所有正在交易的合约"""
-        tradingDay=datetime.datetime.strptime(tradingDay,"%Y%m%d")
-        if self.mysql is None:
-            self.GetDbHistoryConnect()
-        tempfuture={}
-        templist = self.mysql.ExecQuery("select [TradeCode],[ExchangeID],[ProductName] from  [PreTrade].[dbo].[StandContract] order by ExchangeID")
-        templist = BasicAPI().GetResultList(templist)
-        for i in templist:
-            InstrumentId = i[0]
-            ExchangeId = i[1]
-            temp=self.Get_BasicApi().GetInstrumentMonth(self, InstrumentId, ExchangeId, tradingDay)
-            for i in temp:
-                tempfuture[i]=ExchangeId
-        return tempfuture
+        if tradingDay in self.tradingDayInstrument.keys():
+            return self.tradingDayInstrument[tradingDay]
+        else:
+            self.tradingDayInstrument[tradingDay]=dict()
+            tradingDay=datetime.datetime.strptime(tradingDay,"%Y%m%d")
+            if self.mysql is None:
+                self.GetDbHistoryConnect()
+            tempfuture={}
+            templist = self.mysql.ExecQuery("select [TradeCode],[ExchangeID],[ProductName] from  [PreTrade].[dbo].[StandContract] order by ExchangeID")
+            templist = BasicAPI().GetResultList(templist)
+            for i in templist:
+                InstrumentId = i[0]
+                ExchangeId = i[1]
+                temp=self.Get_BasicApi().GetInstrumentMonth(self, InstrumentId, ExchangeId, tradingDay)
+                for i in temp:
+                    tempfuture[i]=ExchangeId
+            self.tradingDayInstrument[tradingDay]=tempfuture
+            return tempfuture
+
+    def CodeByproductName(self):
+        """Get ProductNme by ProductCode"""
 
     def GetDetailByInstrumentID(self,instrumentID,ExchangeID):
         """通过合约代码获取code,以及年月"""
