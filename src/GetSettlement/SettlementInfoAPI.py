@@ -276,6 +276,8 @@ def GetDCEOptionDayInfo(TradingDay, info):
     datalist = info.mysplider.tableTolist(html, "DCE")
     sqlist = []
     for i in datalist[:-2]:
+        if str(i[0]).encode("utf-8").find("计")!=-1 or str(i[1]).encode("utf-8").strip()=="":
+            continue
         temp = list(i)[1:]
         temp.insert(0, TradingDay.strftime("%Y-%m-%d"))
         temp.insert(3,0)
@@ -337,6 +339,8 @@ def dataclean(datalist,tradingday):
         i=list(i)
         col=[]
         s=str(i[0]).decode("utf-8")
+        if str(i[1]).decode("utf-8")=="":
+            continue
         if s.find("小计")==-1:
             s=re_words.search(s).group()
             InstrumentId=cf.get("DCE",s)

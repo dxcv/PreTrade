@@ -6,7 +6,7 @@
 主要包括收盘价，前一天结算价，当天成交量，当天成交金额，最高价，最低价
 """
 import sys
-import os
+import os,datetime
 dir_path=os.path.dirname(os.path.abspath(".."))
 sys.path.append(dir_path)
 from utils.InfoApi import *
