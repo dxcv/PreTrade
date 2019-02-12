@@ -14,7 +14,8 @@ def GetCZCEProduct(mysplider,info,ExchangeID):
     bs = BeautifulSoup(html, "html.parser")
     topnypz = bs.find("div",class_="topnypz").find("ul").findAll("a",href=True)+bs.find("div",class_="fnypz").find("ul").findAll("a",href=True)
     for i in topnypz:
-        InstrumentName = str(i.get_text().encode('utf-8')).strip()
+        print i
+        InstrumentName = str(i.get_text().encode('utf-8')).replace("期货","").strip()
         if InstrumentName=='菜籽油':
             InstrumentName="菜油"
         elif InstrumentName=="菜籽粕":
@@ -23,6 +24,8 @@ def GetCZCEProduct(mysplider,info,ExchangeID):
             InstrumentName="菜籽"
         elif InstrumentName=="晚籼稻":
             InstrumentName="晚稻"
+        elif InstrumentName=="棉花/期权" or InstrumentName=='白糖/期权':
+            InstrumentName=InstrumentName.replace("/期权","")
         href=url+i['href'].encode("utf-8").strip()
         if not basic.StrinList(InstrumentName, existlist):
             mysql.ExecNonQuery(insertsql % (ExchangeID, InstrumentName, href))
