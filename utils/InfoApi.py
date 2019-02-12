@@ -26,6 +26,8 @@ class InfoApi:
         """to save tradingDay's Instrument """
         self.tradingDayInstrument=dict()
         self.NameCode=dict()
+        """Memory to Save all kinds Data"""
+        self.tempdata=dict()
 
     def Get_Msplider(self):
         self.mysplider=MySplider()
@@ -139,12 +141,12 @@ class InfoApi:
 
     def GetCodeByName(self,name):
         """Get ProductCode by ProductNme"""
-        sql="select [InstrumentCode],[InstrumentName] from [ContractCode]"
+        sql="select [InstrumentCode],[InstrumentName],ExchangeID from [ContractCode]"
         if len(self.NameCode)==0:
             self.GetDbHistoryConnect()
             templist=self.mysql.ExecQuery(sql)
             for i in templist:
-                self.NameCode[i[1].encode("utf-8")]=i[0].encode("utf-8")
+                self.NameCode[i[1].encode("utf-8")]=[i[0].encode("utf-8"),i[2].encode("utf-8")]
         return self.NameCode[name]
 
     def GetDetailByInstrumentID(self,instrumentID,ExchangeID):
