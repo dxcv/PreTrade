@@ -74,7 +74,7 @@ def GetSywg(info):
                 col.append(str(tempdata[j].get_text().encode("utf-8")).strip())
         templist.append(col)
     templist=templist[:-1]
-    # BasicAPI().MyPrint(templist)
+    BasicAPI().MyPrint(templist)
     tdict=BasicAPI().TwoList2Dict(templist)
     reduceDict(info,tdict,nowdate,'1')
 
@@ -105,17 +105,18 @@ def GetYhqh(info):
     }
     html=info.mysplider.getUrlcontent(YhqhUrl,header=header)
     bs = BeautifulSoup(html, "html.parser")
-    divdata = bs.find("div",class_="zi_list").findAll("a")[1]
+    divdata = bs.find("div",class_="zi_list").findAll("a")[0]
     url=divdata['href']
     text=divdata.get_text()
     date="".join(map(lambda x:str(x.encode("utf-8")).zfill(2),re.findall(r'\d+', text)))
+    date = str(date)[:4] + "-" + str(date)[4:6] + "-" + str(date[-2:])
     templist=GetYhqhContent(info,date,url)
 
 def GetYhqhContent(info,date,url):
     header={}
     html = info.mysplider.getUrlcontent(url, header=header)
     table=info.mysplider.tableTolist(html,"")
-    print date
+    templist=[]
     for i in table[1:-2]:
         try:
             a=float("".join(re.findall(r'[1-9.]', str(i[0]).strip())))
@@ -126,10 +127,40 @@ def GetYhqhContent(info,date,url):
                         tempname=info.setting.ProductName[j]
                     else:
                         tempname=j
-                    code=info.GetCodeByName(tempname)
-
+                    print tempname
+                    tempcode=info.GetCodeByName(tempname)
+                    if str(tempname).strip().find("(") != -1:
+                        print "---------------------", tempname
+                        if not "specialInstrumentId" in info.tempdata.keys():
+                            info.tempdata['specialInstrumentId'] = dict()
+                        info.tempdata['specialInstrumentId'].append(tempname)
+                    elif str(tempname).strip().find("（") != -1:
+                        print "---------------------", tempname
+                        str(tempname).strip().replace("（","(").replace("）",")")
+                        if not "specialInstrumentId" in info.tempdata.keys():
+                            info.tempdata['specialInstrumentId'] = dict()
+                        info.tempdata['specialInstrumentId'].append(tempname)
+                        # print "---------------------", tempname
+                        # specialMonth = re.findall(r'\d+', str(i[1]).strip())[0].encode("utf-8")
+                        # specialInstrument =GetInstrumentIdByCodeDate(tempcode[0],tempcode[1],specialMonth)
+                        # if not "specialInstrumentId" in info.tempdata.keys():
+                        #     info.tempdata['specialInstrumentId']=dict()
+                        # if not specialInstrument in info.tempdata['specialInstrumentId']:
+                        #     print "---------------------",specialInstrument
+                        #     info.tempdata['specialInstrumentId'].append(specialInstrument)
+                    col = [date, tempcode[0], tempcode[1], float(i[0]) / 100]
+                    print date, tempcode[0], tempcode[1], float(i[0]) / 100
+                    templist.append(col)
         except:
             continue
+    # print info.tempdata['specialInstrumentId']
+    # info.mysql.UpdateMarginExample(templist, '2')
+
+def GetInstrumentIdByCodeDate(code,ExchangeId,specialMonth):
+    if ExchangeId=='CZCE':
+        return code+str(specialMonth)[1:].zfill(3)
+    else:
+        return code+specialMonth
 
 if __name__=='__main__':
     info=InfoApi()
