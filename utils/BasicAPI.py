@@ -151,7 +151,7 @@ class BasicAPI:
                 if not self.InstrumentIdIsTrading(info,str(TradeCode + self.year +self.month).strip(),now):
                     delta=delta+1
             else:
-                delta=0
+                delta=self.BinarySeach(0,len(tempdata),self.month,tempdata)
             for i in range(len(tempdata)):
                 if i+delta<len(tempdata):
                     col.append(TradeCode+self.year+tempdata[(i+delta)%len(tempdata)])
@@ -185,8 +185,13 @@ class BasicAPI:
                     col.append(TradeCode + self.year + monthList[i+index])
                 else:
                     col.append(TradeCode + self.nextyear +monthList[i+index])
+        if TradeCode=='wr':
+            pass
         if self.lastCode.has_key(TradeCode):
             col=col[col.index(self.lastCode[TradeCode]):]
+        # if TradeCode in info.setting.lastCode.keys():
+        #     tempindex=self.BinarySeach(0,len(col),info.setting.lastCode[TradeCode])
+        #     col=col.remove(info.setting.lastCode[TradeCode])
         return col
 
 
@@ -218,3 +223,4 @@ class BasicAPI:
         for i in tkey.keys():
             sorted(tkey[i].keys(), lambda x, y: cmp(x[1], y[1]))
         return tkey
+

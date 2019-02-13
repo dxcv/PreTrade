@@ -7,11 +7,11 @@ import numpy as np
 from utils.InfoApi import  *
 
 sql="""
-SELECT TOP (5) 
+SELECT TOP (4) 
       TradingDay,
 	  InstrumentID,
       [SettlementPrice]
-  FROM [PreTrade].[dbo].[SettlementDetail] where InstrumentID='CF905' or InstrumentID='CF909' or InstrumentID='CF911'  or InstrumentID='CF903'  or  InstrumentID='CF907'  order by TradingDay desc
+  FROM [PreTrade].[dbo].[SettlementDetail] where InstrumentID='CF905' or InstrumentID='CF909' or InstrumentID='CF911'   or  InstrumentID='CF907'   order by TradingDay desc
 """
 def GetInstrument():
     pass
@@ -23,15 +23,15 @@ if __name__=='__main__':
     info=InfoApi()
     resList = info.mysql.ExecQuery(sql)
     PreSettle=dict( (str(name).encode("utf-8"),int(value)) for TradingDay,name,value in resList)
-
     print PreSettle
-    for key in PreSettle.keys():
+
+    for key in sorted(PreSettle.keys(),reverse=False):
         atmstrike=round(PreSettle[key]/1000.0*5)*200
-        for k in np.arange(atmstrike-600, atmstrike+1600, 200):
+        for k in np.arange(atmstrike-600, atmstrike+1400, 200):
             symbol=key+'C'+str(int(k) )
             print symbol
-        for k in np.arange(atmstrike-1200, atmstrike+1000, 200):
+        for k in np.arange(atmstrike-1200, atmstrike+800, 200):
             symbol=key+'P'+str(int(k))
             print symbol
-    GetInstrument()
+    # GetInstrument()
 

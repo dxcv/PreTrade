@@ -13,7 +13,7 @@ import xlwt
 
 def main(info):
     columnsIndex=dict()
-    nowTime="20190129"
+    nowTime="20190212"
     now=datetime.datetime.strptime(nowTime,"%Y%m%d")
     filename=str(now.strftime("%Y%m%d")+'交易日历'+".xls").strip()
     basicapi=BasicAPI()
@@ -45,7 +45,7 @@ def main(info):
         sheet.row(i+1).height = 1000
         sheet.col(i+1).width = (20 * 240)
         InstrumentId=templist[i][0]
-        if InstrumentId=='pp':
+        if InstrumentId=='fu':
             pass
         ExchangeId=templist[i][1]
         ProductName=templist[i][2]
@@ -77,7 +77,7 @@ def main(info):
                     sheet.write(i + 1, columnsIndex[InstrumentIdtemp], content, redstyle)
                     fyear,fmonth=info.basicapi.GetInstrumentYearMonth(j,ExchangeId)
                     days_num = calendar.monthrange(int(fyear), int(fmonth))[1]
-                    tempfuture = BasicAPI().GetInstrumentMonth(info, InstrumentId, ExchangeId,now+datetime.timedelta(days=days_num+5))
+                    tempfuture = BasicAPI().GetInstrumentMonth(info, InstrumentId, ExchangeId,now)
                     for FInstr in  set(set(tempfuture)-set(temp)):
                         if FInstr=='jd2001':
                             pass
