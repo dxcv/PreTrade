@@ -118,6 +118,25 @@ class InfoApi:
         templist = self.mysql.ExecQueryGetList(sql)
         return templist[1] if templist[0]==instrumentID else templist[0]
 
+    def GetRelaviteInstrumentBycode(self,code):
+        """获取相关合约通过product code"""
+        date=str(datetime.datetime.now().year)
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        ExchangeId=self.GetExchangeByCode(code)
+        if ExchangeId=='CZCE':
+            return code+date[3]
+        else:
+            return code+date[2]
+
+
+    def GetExchangeByCode(self,code):
+        sql="SELECT  [ExchangeID] FROM [PreTrade].[dbo].[ContractCode] where InstrumentCode='%s'"%code
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        ExchangeID=self.mysql.ExecQueryGetList(sql)
+        return ExchangeID[0]
+
     def GetAllTradeInstrumentByTradingDay(self,tradingDay):
         """获取某一个交易日的所有正在交易的合约"""
         if tradingDay in self.tradingDayInstrument.keys():
@@ -164,7 +183,9 @@ class InfoApi:
 
     def GetMainInstrumentIdByProductCode(self,code,tradingday):
         """Get main InstrumentID by ProductCode """
-        Mainsql = "SELECT top 1 [InstrumentID] FROM [PreTrade].[dbo].[SettlementInfo] where InstrumentID like'1%' and TradingDay='2019-02-15' order by Position desc"%(code,tradingday)
+        relInstrument=self.GetRelaviteInstrumentBycode(code)
+        relInstrument=" '"+relInstrument+"%'"
+        Mainsql = "SELECT top 1 [InstrumentID] FROM [PreTrade].[dbo].[SettlementInfo] where InstrumentID like"+relInstrument+"and TradingDay='%s' order by Position desc"%tradingday
         if self.mysql is None:
             self.GetDbHistoryConnect()
         instrument=self.mysql.ExecQueryGetList(Mainsql)
