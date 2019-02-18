@@ -4,9 +4,10 @@
 
 """主力合约数据处理脚本"""
 from utils.InfoApi import *
+import datetime
 
 
-def CleanData():
+def CleanData(MainInstrument,info):
     pass
 
 
@@ -25,11 +26,11 @@ if __name__=='__main__':
     t = TradingDay(info)
     startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
     enddate = datetime.datetime.now()
-    mysplider = info.mysplider
 
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
         print startdate
-        CleanData()
+        MainInstrument=info.GetMainInstrumentIdByProductCode(ProductCodeList[0],startdate.strftime("%Y-%m-%d"))
+        CleanData(MainInstrument,info)
         startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)
         startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
 
