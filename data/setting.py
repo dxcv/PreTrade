@@ -14,6 +14,7 @@ class setting:
          self.Holiday=dict()
          self.lastCode = {"eg": 'eg1906', "sp": 'sp1906', "wr": 'wr1903'}
          self.ProductName={'两年期国债':'2年期国债','十年期国债':'10年期国债','五年期国债':'5年期国债','沪深300股指':'沪深300','上证50股指':'上证50','中证500股指':'中证500','油菜籽':'菜籽','晚籼稻':'晚稻','菜籽油':'菜油','菜籽粕':'菜粕'}
+         self.level5=['a','b','bb','c','cs','fb','i','j','jd','jm','l','m','p','pp','v','y']
 
 
      def HistoryDbInfo(self):
