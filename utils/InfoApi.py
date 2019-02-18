@@ -162,8 +162,17 @@ class InfoApi:
                     num=str(nyear)[2:3]+str(num)
         return code,num
 
-
-
+    def GetMainInstrumentIdByProductCode(self,code,tradingday):
+        """Get main InstrumentID by ProductCode """
+        Mainsql = "SELECT top 1 [InstrumentID] FROM [PreTrade].[dbo].[SettlementInfo] where InstrumentID like'1%' and TradingDay='2019-02-15' order by Position desc"%(code,tradingday)
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        instrument=self.mysql.ExecQueryGetList(Mainsql)
+        if len(instrument):
+            return instrument[0]
+        else:
+            print "code or  traingday error"
+            raise Exception
 
     def GetAllExchange(self):
         """
