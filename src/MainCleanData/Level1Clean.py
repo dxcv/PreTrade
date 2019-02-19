@@ -31,11 +31,11 @@ def Myappend(csv_data, i, templist,InstrumentID,TradingDay):
     templist.append(tuple(newcol))
 
 
-def ReadData(filename, fileDirectory, info):
+def Level_1_Clean(filename, fileDirectory, info):
     """
     读取数据并清洗
-    :param filename: 文件名
-    :param fileDirectory: 文件路径
+    :param filename: 源文件名
+    :param fileDirectory: 源文件路径
     :return:
     """
     templist = []
@@ -47,7 +47,6 @@ def ReadData(filename, fileDirectory, info):
     code = info.cleanDatadict[1]
     sql = """ select [DayTradTime],[NightTradTime] from ContractCode where InstrumentCode='%s'"""%code
     TradTime=info.mysql.ExecQuery(sql)[0]
-    starthms,endhms = GetSEndHms(TradTime)
     try:
         csv_data=pd.read_csv(fileDirectory+"\\"+filename,encoding='gbk',header=0,names=cols)
     except Exception,e:
@@ -55,6 +54,8 @@ def ReadData(filename, fileDirectory, info):
         print "文件读取异常，安全退出"
         sys.exit(0)
     length = len(csv_data)-1
+    firstdata = datetime.datetime.strptime(str(csv_data.at[0, 'Time']), '%Y-%m-%d %H:%M:%S').strftime("%H:%M:%S")
+    starthms, endhms = GetSEndHms(TradTime,firstdata)
     backup_name = info.cleanDatadict[1] + "_" + info.cleanDatadict[0] + ".csv"
     backup_csvfile = IshaveFile(backup_name, info.cleanDatadict[3], False, "wb")
     writer = csv.writer(backup_csvfile)

@@ -7,6 +7,7 @@ from utils.InfoApi import *
 import datetime
 from utils.TradingDay import  NextTradingDay
 from Level5Clean import *
+from Level1Clean import *
 
 def Getdirector(info):
     if info.cleanDatadict[1] in info.setting.level5:
@@ -20,10 +21,13 @@ def CleanData(info):
     if type==5:
         """type   5 大商所五档行情        1   一档行情"""
         Level_5_clean(filename, directory, info)
+    elif type==1:
+        Level_1_Clean(filename, directory, info)
 
 if __name__=='__main__':
 
     ProductCodeList=['ni','au','ag','rb','i','m','TA']
+    ProductCodeList = ['ni']
     StartDay="20180801"
     storeDirectory="D:/DATA/MainIstrument/some/"
 
@@ -36,14 +40,14 @@ if __name__=='__main__':
     t = NextTradingDay.TradingDay(info)
     startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
     enddate = datetime.datetime.now()-datetime.timedelta(days=1)
+    for i in ProductCodeList:
+        while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
+            print startdate
+            MainInstrument=info.GetMainInstrumentIdByProductCode(i,startdate.strftime("%Y-%m-%d"))
+            info.cleanDatadict = [startdate.strftime("%Y%m%d"), i,MainInstrument,storeDirectory+startdate.strftime("%Y%m%d")+"/"]
+            CleanData(info)
+            startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)
+            startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
 
-    while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
-        print startdate
-        MainInstrument=info.GetMainInstrumentIdByProductCode(ProductCodeList[0],startdate.strftime("%Y-%m-%d"))
-        info.cleanDatadict = [startdate.strftime("%Y%m%d"), ProductCodeList[0],MainInstrument,storeDirectory+startdate.strftime("%Y%m%d")+"/"]
-        CleanData(info)
-        startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)
-        startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
-
-    info.mysql.Disconnect()
+        info.mysql.Disconnect()
 

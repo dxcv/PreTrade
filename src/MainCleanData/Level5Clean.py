@@ -54,8 +54,9 @@ def  Level_5_clean(filename, fileDirectory, info):
     code=info.cleanDatadict[1]
     sql = """ select [DayTradTime],[NightTradTime] from ContractCode where InstrumentCode='%s'""" % code
     TradTime = info.mysql.ExecQuery(sql)[0]
-    starthms, endhms = GetSEndHms(TradTime)
-
+    firstdata = datetime.datetime.strptime(str(csv_data.at[0, 'Time']), '%Y-%m-%d %H:%M:%S').strftime("%H:%M:%S")
+    starthms, endhms = GetSEndHms(TradTime,firstdata)
+    """"""
     col = []
     col.append('InstrumentId')
     col.append('TradingDay')

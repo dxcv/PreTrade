@@ -5,12 +5,15 @@
 import datetime
 
 
-def  GetSEndHms(TradTime):
+def  GetSEndHms(TradTime,firstdata):
     """获取合约的交易开始时间"""
     startime={'0':['090000000','091500000','093000000']}
     endtime=['150000000','151500000','150000000']
     if TradTime[1]=='0':
+        """No Night Trade"""
         return startime['0'][int(TradTime[0])],endtime[int(TradTime[0])]
+    if firstdata<"09:00:00":
+        return startime['0'][int(TradTime[0])], endtime[int(TradTime[0])]
     else:
         return '210000000',endtime[int(TradTime[0])]
 
