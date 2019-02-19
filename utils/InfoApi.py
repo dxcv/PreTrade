@@ -28,6 +28,7 @@ class InfoApi:
         self.NameCode=dict()
         """Memory to Save all kinds Data"""
         self.tempdata=dict()
+        self.cleanDatadict=list()
 
     def Get_Msplider(self):
         self.mysplider=MySplider()
@@ -192,7 +193,7 @@ class InfoApi:
         if len(instrument):
             return instrument[0]
         else:
-            print "code or  traingday error"
+            print "code or  traingday error",code,tradingday
             raise Exception
 
     def GetAllExchange(self):
