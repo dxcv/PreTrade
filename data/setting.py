@@ -6,9 +6,9 @@ import ConfigParser
 
 class setting:
      def __init__(self):
-         self.server = 'localhost:53350'
+         self.server = 'localhost:1433'
          self.user = 'sa'
-         self.password = 'aa85258584'
+         self.password = 'Laystbz20!*'
          self.ExchangeList=['CZCE','DCE','SHFE','CFFEX']
          self.Website="http://www.%s.com.cn"
          self.Holiday=dict()
