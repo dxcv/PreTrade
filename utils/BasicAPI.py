@@ -8,7 +8,7 @@ import re
 import datetime
 from utils.TradingDay.EndDate import *
 from data.setting import *
-import sys
+import sys,os
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -224,3 +224,8 @@ class BasicAPI:
             sorted(tkey[i].keys(), lambda x, y: cmp(x[1], y[1]))
         return tkey
 
+
+def IsExistdiretory(dirctoryName,parent):
+    """Is Parent diretory exist a dirctoryName file """
+    if not os.path.exists(parent+"/"+dirctoryName):
+        os.mkdir(parent+"/"+dirctoryName)

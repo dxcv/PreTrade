@@ -8,6 +8,7 @@ import datetime
 from utils.TradingDay import  NextTradingDay
 from Level5Clean import *
 from Level1Clean import *
+from utils.BasicAPI import *
 
 def Getdirector(info):
     if info.cleanDatadict[1] in info.setting.level5:
@@ -27,7 +28,7 @@ def CleanData(info):
 if __name__=='__main__':
 
     ProductCodeList=['ni','au','ag','rb','i','m','TA']
-    ProductCodeList = ['ni']
+    # ProductCodeList = ['m']
     StartDay="20180801"
     storeDirectory="D:/DATA/MainIstrument/some/"
 
@@ -40,9 +41,10 @@ if __name__=='__main__':
     t = NextTradingDay.TradingDay(info)
     startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
     enddate = datetime.datetime.now()-datetime.timedelta(days=1)
-    for i in ProductCodeList:
+    for i in tqdm(ProductCodeList):
         while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
             print startdate
+            IsExistdiretory(startdate.strftime("%Y%m%d"),storeDirectory)
             MainInstrument=info.GetMainInstrumentIdByProductCode(i,startdate.strftime("%Y-%m-%d"))
             info.cleanDatadict = [startdate.strftime("%Y%m%d"), i,MainInstrument,storeDirectory+startdate.strftime("%Y%m%d")+"/"]
             CleanData(info)

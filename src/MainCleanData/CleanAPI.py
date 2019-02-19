@@ -26,7 +26,7 @@ def IshaveFile(name, fileDirectory, close, method):
    :param method: 
    :return: 
     """""
-    filename=fileDirectory + "/" + name
+    filename=fileDirectory + name
 
     try:
         file_backup = open(filename, method)
@@ -178,13 +178,21 @@ def nextdurationTime(time,TradTime):
 
 def specialdata(hms,TradTime):
     temp=dict()
-    temp['0']=['090000000','103000000','133000000']
-    temp['1']=['091500000','130000000']
-    temp['2']=['093000000','130000000']
+    temp['0']=['090000000','101500','103000000','113000','133000000']
+    temp['1']=['091500000','113000','130000000']
+    temp['2']=['093000000','113000','130000000']
+
+    night=dict()
+    night['1']=['230000']
+    night['2']=['233000']
+    night['3']=['010000']
+    night['4']=['023000']
     if hms in temp[TradTime[0]]:
         return True
-    else:
-        return False
+    if hms in night[TradTime[1]]:
+        return True
+
+    return False
 
 
 

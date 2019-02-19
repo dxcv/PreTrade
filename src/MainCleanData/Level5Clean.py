@@ -40,10 +40,10 @@ def  Level_5_clean(filename, fileDirectory, info):
     theoryhms=""
     lasthms="-1"
     col=[]
+    InstrumentId = info.cleanDatadict[2]
+    TradingDay = info.cleanDatadict[0]
     try:
-        csv_data=pd.read_csv(fileDirectory+"\\"+file)
-        t=fileDirectory.split("\\")
-        TradingDay=t[len(t)-1]
+        csv_data=pd.read_csv(fileDirectory+"\\"+filename)
     except Exception, e:
         print  "u'源数据文件不存在,或请先关闭文件",info.cleanDatadict[0],info.cleanDatadict[1]
         return
@@ -101,9 +101,9 @@ def  Level_5_clean(filename, fileDirectory, info):
                             starthms = theorynextdate(starthms, TradTime)
                     csv_data.at[i, 'Time'] = starthms
                     Myappend(csv_data, i, templist, InstrumentId, TradingDay)
-                    if lasthms == endhms:
-                        # daylist = [InstrumentId, TradingDay, csv_data.at[i, 'TotalVol'], csv_data.at[i, 'TotalAmount'],csv_data.at[i, 'Price2'],(csv_data.at[i,'SP1']+csv_data.at[i,'BP1'])/2, csv_data.at[i, 'Price3'],csv_data.at[i, 'LastClose']]
-                        break
+                    # if lasthms == endhms:
+                    #     # daylist = [InstrumentId, TradingDay, csv_data.at[i, 'TotalVol'], csv_data.at[i, 'TotalAmount'],csv_data.at[i, 'Price2'],(csv_data.at[i,'SP1']+csv_data.at[i,'BP1'])/2, csv_data.at[i, 'Price3'],csv_data.at[i, 'LastClose']]
+                    #     break
                     lasthms = theorynextdate(starthms, TradTime)
                     starthms=""
 

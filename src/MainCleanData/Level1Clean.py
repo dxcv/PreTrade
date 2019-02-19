@@ -54,7 +54,7 @@ def Level_1_Clean(filename, fileDirectory, info):
         print "文件读取异常，安全退出"
         sys.exit(0)
     length = len(csv_data)-1
-    firstdata = datetime.datetime.strptime(str(csv_data.at[0, 'Time']), '%Y-%m-%d %H:%M:%S').strftime("%H:%M:%S")
+    firstdata = datetime.datetime.strptime(str(csv_data.at[0, '最后修改时间']), '%H:%M:%S').strftime("%H:%M:%S")
     starthms, endhms = GetSEndHms(TradTime,firstdata)
     backup_name = info.cleanDatadict[1] + "_" + info.cleanDatadict[0] + ".csv"
     backup_csvfile = IshaveFile(backup_name, info.cleanDatadict[3], False, "wb")
@@ -65,10 +65,12 @@ def Level_1_Clean(filename, fileDirectory, info):
     for i in columnsNum1:
         col.append(columns0[i])
     writer.writerow(col)
-
+    """lasthms 存储接下来的数据点 temp 记录上一个已经处理完的数据点"""
     for i in csv_data.index:
         date = datetime.datetime.strptime(str(csv_data.at[i, '最后修改时间']), '%H:%M:%S')
         hms = date.strftime("%H%M%S")
+        if hms=='010000':
+            pass
         if temp==hms:
             continue
         if isintimerange(hms+"000",TradTime):
@@ -103,9 +105,9 @@ def Level_1_Clean(filename, fileDirectory, info):
                             starthms = theorynextdate(starthms, TradTime)
                     csv_data.at[i, '最后修改时间'] = starthms
                     Myappend(csv_data, i, templist, InstrumentId, TradingDay)
-                    if lasthms == endhms:
-                        daylist = [InstrumentId, TradingDay, csv_data.at[i, '数量'], csv_data.at[i, '成交金额'],csv_data.at[i, '本次结算价'], csv_data.at[i, '最新价'], csv_data.at[i, '上次结算价'],csv_data.at[i, '昨收盘']]
-                        break
+                    # if lasthms == endhms:
+                    #     daylist = [InstrumentId, TradingDay, csv_data.at[i, '数量'], csv_data.at[i, '成交金额'],csv_data.at[i, '本次结算价'], csv_data.at[i, '最新价'], csv_data.at[i, '上次结算价'],csv_data.at[i, '昨收盘']]
+                    #     break
                     lasthms = theorynextdate(starthms, TradTime)
                     starthms=""
             elif hms !=temp:
@@ -119,7 +121,7 @@ def Level_1_Clean(filename, fileDirectory, info):
                     csv_data.at[i, '最后修改时间'] = lasthms
                     Myappend(csv_data, i, templist, InstrumentId, TradingDay)
                     if lasthms == endhms:
-                        daylist = [InstrumentId, TradingDay, csv_data.at[i, '数量'], csv_data.at[i, '成交金额'],csv_data.at[i, '本次结算价'], csv_data.at[i, '最新价'], csv_data.at[i, '上次结算价'],csv_data.at[i, '昨收盘']]
+                        # daylist = [InstrumentId, TradingDay, csv_data.at[i, '数量'], csv_data.at[i, '成交金额'],csv_data.at[i, '本次结算价'], csv_data.at[i, '最新价'], csv_data.at[i, '上次结算价'],csv_data.at[i, '昨收盘']]
                         break
                     lasthms = theorynextdate(lasthms, TradTime)
                     if specialdata(hms,TradTime):
@@ -128,6 +130,7 @@ def Level_1_Clean(filename, fileDirectory, info):
                     csv_data.at[i, '最后修改时间'] = lasthms
                     Myappend(csv_data, i, templist,InstrumentId,TradingDay)
                     lasthms = theorynextdate(lasthms, TradTime)
+                    """特殊点的处理"""
                     if specialdata(hms,TradTime):
                         temp=hms
                 elif lasthms==hms+"500":
@@ -151,7 +154,7 @@ def Level_1_Clean(filename, fileDirectory, info):
                 break
             lasthms = theorynextdate(lasthms, TradTime)
     while lasthms!="":
-        csv_data.at[i, 'Time'] = lasthms
+        csv_data.at[i, '最后修改时间'] = lasthms
         Myappend(csv_data, i, templist, InstrumentId, TradingDay)
         lasthms = theorynextdate(lasthms, TradTime)
     writer.writerows(templist)
