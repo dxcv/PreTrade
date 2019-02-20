@@ -27,7 +27,7 @@ def CleanData(info):
 
 if __name__=='__main__':
 
-    ProductCodeList=['ag','rb','i','m','TA']
+    ProductCodeList=['ni','au','ag','rb','i','m','TA']
     # ProductCodeList = ['ni']
     StartDay="20180801"
     # StartDay = "20190201"
