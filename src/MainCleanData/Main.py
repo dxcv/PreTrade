@@ -27,9 +27,10 @@ def CleanData(info):
 
 if __name__=='__main__':
 
-    ProductCodeList=['ni','au','ag','rb','i','m','TA']
-    # ProductCodeList = ['m']
+    ProductCodeList=['ag','rb','i','m','TA']
+    # ProductCodeList = ['ni']
     StartDay="20180801"
+    # StartDay = "20190201"
     storeDirectory="D:/DATA/MainIstrument/some/"
 
     """Read SqlServer Get Main InstrumentID by ProductCode"""
@@ -39,9 +40,11 @@ if __name__=='__main__':
     info.GetDbHistoryConnect()
 
     t = NextTradingDay.TradingDay(info)
-    startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
-    enddate = datetime.datetime.now()-datetime.timedelta(days=1)
+    # enddate = datetime.datetime.now()-datetime.timedelta(days=1)
+    enddate = datetime.datetime.strptime("20190201","%Y%m%d")
     for i in tqdm(ProductCodeList):
+        StartDay = "20180801"
+        startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
         while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
             print startdate
             IsExistdiretory(startdate.strftime("%Y%m%d"),storeDirectory)
@@ -51,5 +54,5 @@ if __name__=='__main__':
             startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)
             startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
 
-        info.mysql.Disconnect()
+    info.mysql.Disconnect()
 

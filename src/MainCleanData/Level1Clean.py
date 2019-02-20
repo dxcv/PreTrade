@@ -48,11 +48,11 @@ def Level_1_Clean(filename, fileDirectory, info):
     sql = """ select [DayTradTime],[NightTradTime] from ContractCode where InstrumentCode='%s'"""%code
     TradTime=info.mysql.ExecQuery(sql)[0]
     try:
-        csv_data=pd.read_csv(fileDirectory+"\\"+filename,encoding='gbk',header=0,names=cols)
+        csv_data=pd.read_csv(fileDirectory+filename,encoding='gbk',header=0,names=cols)
     except Exception,e:
         print e.message
         print "文件读取异常，安全退出"
-        sys.exit(0)
+        return
     length = len(csv_data)-1
     firstdata = datetime.datetime.strptime(str(csv_data.at[0, '最后修改时间']), '%H:%M:%S').strftime("%H:%M:%S")
     starthms, endhms = GetSEndHms(TradTime,firstdata)
