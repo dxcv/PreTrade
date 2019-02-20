@@ -158,7 +158,6 @@ def main(startdate, infoapi):
 
     DCESettlementDetail(startdate, infoapi)              # 大商所保证金手续费信息
 
-
     SHFESettlementDetail(startdate, infoapi)              #上期所保证金手续费相关信息
 
 
@@ -167,7 +166,7 @@ if __name__=="__main__":
     infoapi=InfoApi()
     infoapi.Get_Msplider()
     t = TradingDay(infoapi)
-    startdate = datetime.datetime.strptime("20180801", "%Y%m%d")
+    startdate = datetime.datetime.strptime("20190114", "%Y%m%d")
     enddate = datetime.datetime.now()
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
         print startdate
