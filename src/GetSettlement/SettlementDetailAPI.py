@@ -230,6 +230,9 @@ def GetDCEDelive(tmp):
     return  cf.get("DCEdeliveryCosts",code)
 
 def SHFESettlementDetail(TradingDay, infoapi):
+    """20180921后才有相关数据"""
+    if TradingDay.strftime("%Y-%m-%d")<'20180921':
+        return
     sql1 = """
                select TradingDay from [PreTrade].[dbo].[SettlementDetail] where TradingDay='%s' and ExchangeID='SHFE' and IsFutures=1
            """
