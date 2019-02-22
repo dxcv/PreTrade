@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# coding: utf-8
 # @Time    : 2019/1/17 15:44
 # @Author  : ZouJunLin
 """获取最近所有品种正在交易的合约，最后交易日倒计时，和即将到来的合约"""
@@ -22,7 +22,7 @@ def main(info):
     print largmonth,largyear
     largMonthList =GetContinueM(largyear,largmonth)
     # print largMonthList
-    columns=[u"交易所",u"交易品种",u"名称"]+largMonthList
+    columns=["交易所","交易品种","名称"]+largMonthList
     style=MyXlwt().GetMystyleTitle()
     redstyle=MyXlwt().GetstyleRed()
     # filename=datetime.datetime.now().strftime("%Y%m%d")+u"交易日历"+".xlsx"
@@ -31,6 +31,11 @@ def main(info):
 
     wbk = xlwt.Workbook(encoding="utf-8")
     sheet = wbk.add_sheet('sheet Test')
+    sheet.row(0).height_mismatch = True
+    sheet.row(0).height = 1000
+    sheet.col(0).width = (20 * 240)
+
+
     # indexing is zero based, row then column
     InstrumentIDList = info.mysql.ExecQueryGetList( "select [InstrumentID]  FROM [PreTrade].[dbo].[SettlementInfo] where TradingDay='%s'  and [IsFuture]='1'"%now.strftime("%Y-%m-%d"))
     for i in range(len(columns)):
@@ -40,6 +45,7 @@ def main(info):
         sheet.write(0,i,columns[i],style)
         columnsIndex[columns[i]]=i
     print columnsIndex
+
     for i in range(len(templist)):
         sheet.row(i+1).height_mismatch = True
         sheet.row(i+1).height = 1000

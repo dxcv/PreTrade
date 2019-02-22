@@ -5,10 +5,9 @@ import os
 from utils.InfoApi import  *
 import csv
 import pandas as pd
+import numpy as np
 
 
-a="2019/2/14 20:59:00"
-firstdata="8:59:00"
-firstdata=datetime.datetime.strptime(str(a), '%Y/%m/%d %H:%M:%S').strftime("%H:%M:%S")
-if firstdata < "09:00:00":
-    print firstdata
+a='CF907C18000'
+
+print  a[:5]
