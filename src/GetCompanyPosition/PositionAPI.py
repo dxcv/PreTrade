@@ -41,14 +41,27 @@ def GetDCEPositionProductData(info):
     # raise Exception
 
 def GetDCEStagedTurnover(info,TradingDay,ExchangeID):
-    sql=""
+
+    beginmonth=TradingDay.strftime("%Y%m")
+    endmonth=TradingDay.strftime("%Y%m")
+    url = "http://www.dce.com.cn/publicweb/quotesdata/memberDealCh.html?"
+    url = url + "memberDealQuotes.variety = %s & memberDealQuotes.trade_type = 0& memberDealQuotes.begin_month = %s & memberDealQuotes.end_month = %s"
+    sql="SELECT [InstrumentCode] FROM [PreTrade].[dbo].[ContractCode] where [ExchangeID]='DCE'"
+    templist = info.mysql.ExecQueryGetList(sql)
+    for i in templist:
+        url = url % (i, TradingDay.month - 1, TradingDay.month - 1)
+        print url
+
 
 
 def ListDataToExcel(info,listdata,ext):
     """a public method  that list data write ext extension file"""
     parent="D:/GitData/PositionData/"
-    if not os.path.exists(parent + "/" + info.QryPositionExchangeID):
-        os.mkdir(parent + "/" + info.QryPositionExchangeID)
+
+    if not os.path.exists(parent + "/" + info.QryPositionTradingDay):
+        os.mkdir(parent + "/" + info.QryPositionTradingDay)
+    if not os.path.exists(parent + "/" + info.QryPositionTradingDay+ "/" + info.QryPositionExchangeID):
+        os.mkdir(parent+ "/" + info.QryPositionTradingDay + "/" + info.QryPositionExchangeID)
     filename=info.QryPositionTradingDay+"_"+info.QryPositionInstrumentID+ext
 
 
