@@ -6,7 +6,7 @@ from utils.Mysplider import *
 import codecs,ConfigParser,json
 from utils.sqlServer import *
 from utils.InfoApi import *
-import sys
+import sys,re
 reload(sys)
 
 def CZCESettlementDetail(TradingDay,infoapi):
