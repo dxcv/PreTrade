@@ -34,6 +34,13 @@ class InfoApi:
         self.mysplider=MySplider()
         return self.mysplider
 
+    def Set_QryPosition(self,ExchangeID,url,code,InstrumentID,TradingDay):
+        self.QryPositionExchangeID=ExchangeID
+        self.QryPositionurl=url
+        self.QryPositionCode=code
+        self.QryPositionInstrumentID=InstrumentID
+        self.QryPositionTradingDay=TradingDay
+
     def Get_BasicApi(self):
         self.basicapi=BasicAPI()
         return self.basicapi

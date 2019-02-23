@@ -63,6 +63,43 @@ class MySplider:
                 tablelist.append(tuple(col))
         return tablelist
 
+    def tableTolistByNum(self,content,exchangeID,num):
+        """
+        通过第几个num将网页的table里面的数据抽取到list中,并且去掉空格等
+        主要是抓取持仓信息时用
+        """
+        tablelist=[]
+        bs = BeautifulSoup(content, "html.parser")
+        divdata = bs.findAll("table")[num]
+        if divdata is None:
+            bs = BeautifulSoup(content, "lxml")
+            divdata = bs.find("table")
+        try:
+            trdata = divdata.findAll("tr")
+        except:
+            print "网络异常，部分数据爬取失败，重新运行"
+            return []
+        for tr in trdata:
+            td=tr.findAll("td")
+            col = []
+            a=len(td)
+            if len(td)>0:
+                for i in td:
+                    temp=str(i.text.strip().encode("utf-8")).strip().replace(",", "").replace("绝对值", '0').replace("比例值", '1')
+                    if temp=='-':
+                        temp=temp.strip("-")
+                    col.append(temp)
+                # col.insert(2,exchangeID)
+            elif len(tr.findAll("th")) > 0:
+                td = tr.findAll("th")
+                for i in td:
+                    temp=str(i.text.strip().encode("utf-8")).strip().replace(",", "").replace("绝对值", '0').replace("比例值", '1')
+                    if temp=='-':
+                        temp=temp.strip("-")
+                    col.append(temp)
+            tablelist.append(tuple(col))
+        return tablelist
+
     def tableTolistP(self,content,exchangeID):
         """
         将网页的table里面的数据抽取到list中,与tableTolist不去逗号等内容
