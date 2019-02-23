@@ -11,6 +11,7 @@ from utils.sqlServer import *
 from utils.BasicAPI import *
 from  data.setting import *
 from utils.Mysplider import *
+from MyDate import *
 import calendar
 
 
@@ -29,6 +30,7 @@ class InfoApi:
         """Memory to Save all kinds Data"""
         self.tempdata=dict()
         self.cleanDatadict=list()
+        self.mydate=MyDate()
 
     def Get_Msplider(self):
         self.mysplider=MySplider()
