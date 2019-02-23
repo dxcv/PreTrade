@@ -45,12 +45,13 @@ def GetDCEStagedTurnover(info,TradingDay,ExchangeID):
     beginmonth=TradingDay.strftime("%Y%m")
     endmonth=TradingDay.strftime("%Y%m")
     url = "http://www.dce.com.cn/publicweb/quotesdata/memberDealCh.html?"
-    url = url + "memberDealQuotes.variety = %s & memberDealQuotes.trade_type = 0& memberDealQuotes.begin_month = %s & memberDealQuotes.end_month = %s"
-    sql="SELECT [InstrumentCode] FROM [PreTrade].[dbo].[ContractCode] where [ExchangeID]='DCE'"
+    url = url + "memberDealQuotes.variety=%s&memberDealQuotes.trade_type=0&memberDealQuotes.begin_month=%s&memberDealQuotes.end_month=%s"
+    sql="SELECT [InstrumentCode] FROM [PreTrade].[dbo].[ContractCode] where [ExchangeID]='%s'"%ExchangeID
     templist = info.mysql.ExecQueryGetList(sql)
+    templist.append("all")
     for i in templist:
-        url = url % (i, TradingDay.month - 1, TradingDay.month - 1)
-        print url
+        Surl = url % (i, beginmonth, endmonth)
+        print Surl
 
 
 
