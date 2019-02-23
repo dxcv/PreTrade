@@ -58,10 +58,10 @@ def ListDataToExcel(info,listdata,ext):
     """a public method  that list data write ext extension file"""
     parent="D:/GitData/PositionData/"
 
-    if not os.path.exists(parent + "/" + info.QryPositionTradingDay):
-        os.mkdir(parent + "/" + info.QryPositionTradingDay)
-    if not os.path.exists(parent + "/" + info.QryPositionTradingDay+ "/" + info.QryPositionExchangeID):
-        os.mkdir(parent+ "/" + info.QryPositionTradingDay + "/" + info.QryPositionExchangeID)
+    if not os.path.exists(parent + "/" + info.QryPositionExchangeID):
+        os.mkdir(parent + "/" + info.QryPositionExchangeID)
+    if not os.path.exists(parent + "/" + info.QryPositionExchangeID+ "/" + info.QryPositionTradingDay):
+        os.mkdir(parent+ "/" + info.QryPositionExchangeID + "/" + info.QryPositionTradingDay)
     filename=info.QryPositionTradingDay+"_"+info.QryPositionInstrumentID+ext
 
 
