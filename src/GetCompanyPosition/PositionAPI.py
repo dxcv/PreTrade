@@ -57,6 +57,7 @@ def GetDCEStagedTurnover(info,TradingDay,ExchangeID):
     templist.append("all")
     for i in templist:
         Surl = url % (i, beginmonth, endmonth)
+        print Surl
         info.Set_StagePosition(ExchangeID, Surl, i,beginmonth,endmonth)
         GetDCEStagePosition(info)
 
@@ -82,7 +83,7 @@ def GetDCEStagePosition(info):
         os.mkdir(parent + info.StagePositionExchangeID)
     if not os.path.exists(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime):
         os.mkdir(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime)
-    filename = info.StagePositionCode+"_"+info.StagePositionBeginTime+ ext
+    filename = info.StagePositionCode+"_"+info.StagePositionBeginTime+"月成交排名"+ ext
     filename = parent + info.StagePositionExchangeID + "/" + info.StagePositionBeginTime+ "/" + filename
     ListDataToExcel(listdata,filename)
 
