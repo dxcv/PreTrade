@@ -4,6 +4,7 @@
 """爬取持仓共用的API"""
 import re
 import csv,os,codecs,datetime
+import pandas as pd
 
 def GetDCEPosition(info,TradingDay,ExchangeID):
 
@@ -83,7 +84,7 @@ def GetDCEStagePosition(info):
         os.mkdir(parent + info.StagePositionExchangeID)
     if not os.path.exists(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime):
         os.mkdir(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime)
-    filename = info.StagePositionCode+"_"+info.StagePositionBeginTime+"月成交排名"+ ext
+    filename = info.StagePositionCode+"_"+info.StagePositionBeginTime+ ext
     filename = parent + info.StagePositionExchangeID + "/" + info.StagePositionBeginTime+ "/" + filename
     ListDataToExcel(listdata,filename)
 
@@ -118,7 +119,7 @@ def  GetDCEStatistic(info,url,ExchangeID,beginmonth):
         os.mkdir(parent + ExchangeID)
     if not os.path.exists(parent + ExchangeID + "/" + beginmonth):
         os.mkdir(parent + ExchangeID + "/" + beginmonth)
-    filename = beginmonth+"月度统计表"+ext
+    filename = beginmonth+ext
     filename = parent + ExchangeID  + "/"+beginmonth+"/" + filename
     col=[]
     col0=listdata[0]
@@ -138,3 +139,6 @@ def ListDataToExcel(listdata,filename):
     writer=csv.writer(csvfile)
     writer.writerows(listdata)
     csvfile.close()
+    csvtemp = pd.read_csv(filename, encoding='utf-8')
+    csvtemp.to_excel(filename.replace(".csv",".xlsx"), sheet_name='data')
+    os.remove(filename)
