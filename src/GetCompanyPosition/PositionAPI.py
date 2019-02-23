@@ -5,6 +5,7 @@
 import re
 import csv,os,codecs,datetime
 import pandas as pd
+import xlwt
 
 def GetDCEPosition(info,TradingDay,ExchangeID):
 
@@ -139,6 +140,9 @@ def ListDataToExcel(listdata,filename):
     writer=csv.writer(csvfile)
     writer.writerows(listdata)
     csvfile.close()
-    csvtemp = pd.read_csv(filename, encoding='utf-8')
-    csvtemp.to_excel(filename.replace(".csv",".xlsx"), sheet_name='data')
+    df_new = pd.read_csv(filename, encoding='utf-8')
+    writer = pd.ExcelWriter(filename.replace(".csv",".xlsx"))
+    df_new.to_excel(writer, index=False)
+    writer.save()
     os.remove(filename)
+
