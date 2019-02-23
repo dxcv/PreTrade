@@ -19,6 +19,7 @@ def GetDCEPosition(info,TradingDay,ExchangeID):
 
 
 def GetDCEPositionProductData(info):
+    ext=".csv"
     header = {
         'Connection': 'keep-alive',
         'Cache-Control': 'no-cache',
@@ -35,13 +36,18 @@ def GetDCEPositionProductData(info):
     listdata=info.mysplider.tableTolistByNum(html,"DCE",1)
 
     """write to xls"""
-
-    ListDataToExcel(info,listdata,".csv")
+    parent = "D:/GitData/PositionData/"
+    if not os.path.exists(parent+ info.QryPositionExchangeID):
+        os.mkdir(parent  + info.QryPositionExchangeID)
+    if not os.path.exists(parent  + info.QryPositionExchangeID + "/" + info.QryPositionTradingDay):
+        os.mkdir(parent + info.QryPositionExchangeID + "/" + info.QryPositionTradingDay)
+    filename = info.QryPositionTradingDay + "_" + info.QryPositionInstrumentID + ext
+    filename=parent+info.QryPositionExchangeID+"/"+ info.QryPositionTradingDay+"/"+filename
+    ListDataToExcel(listdata,filename)
 
     # raise Exception
 
 def GetDCEStagedTurnover(info,TradingDay,ExchangeID):
-
     beginmonth=TradingDay.strftime("%Y%m")
     endmonth=TradingDay.strftime("%Y%m")
     url = "http://www.dce.com.cn/publicweb/quotesdata/memberDealCh.html?"
@@ -51,24 +57,42 @@ def GetDCEStagedTurnover(info,TradingDay,ExchangeID):
     templist.append("all")
     for i in templist:
         Surl = url % (i, beginmonth, endmonth)
-        print Surl
+        info.Set_StagePosition(ExchangeID, Surl, i,beginmonth,endmonth)
+        GetDCEStagePosition(info)
+
+def GetDCEStagePosition(info):
+    header = {
+        'Connection': 'keep-alive',
+        'Cache-Control': 'no-cache',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Cookie': 'JSESSIONID=1311697EA3395C8127FD0BB9D51B1742; WMONID=j1TJsMZrARA; Hm_lvt_a50228174de2a93aee654389576b60fb=1550114491,1550801897,1550826990,1550890979; Hm_lpvt_a50228174de2a93aee654389576b60fb=1550892897',
+        'Host': 'www.dce.com.cn',
+        'Pragma': 'no-cache',
+        'Upgrade-Insecure-Requests': '1'
+    }
+    html=info.mysplider.getUrlcontent(info.StagePositionurl,header=header)
+    listdata=info.mysplider.tableTolistByNum(html,"DCE",0)
+
+    """write to xls"""
+    ext='.csv'
+    parent = "D:/GitData/StagePosition/"
+    if not os.path.exists(parent + info.StagePositionExchangeID):
+        os.mkdir(parent + info.StagePositionExchangeID)
+    if not os.path.exists(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime):
+        os.mkdir(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime)
+    filename = info.StagePositionCode+"_"+info.StagePositionBeginTime+ ext
+    filename = parent + info.StagePositionExchangeID + "/" + info.StagePositionBeginTime+ "/" + filename
+    ListDataToExcel(listdata,filename)
 
 
-
-def ListDataToExcel(info,listdata,ext):
+def ListDataToExcel(listdata,filename):
     """a public method  that list data write ext extension file"""
-    parent="D:/GitData/PositionData/"
-
-    if not os.path.exists(parent + "/" + info.QryPositionExchangeID):
-        os.mkdir(parent + "/" + info.QryPositionExchangeID)
-    if not os.path.exists(parent + "/" + info.QryPositionExchangeID+ "/" + info.QryPositionTradingDay):
-        os.mkdir(parent+ "/" + info.QryPositionExchangeID + "/" + info.QryPositionTradingDay)
-    filename=info.QryPositionTradingDay+"_"+info.QryPositionInstrumentID+ext
 
     # file_backup=f = codecs.open(parent+info.QryPositionExchangeID+"/"+filename,'wb','utf-8')
-    csvfile = file(parent+info.QryPositionExchangeID+"/" + info.QryPositionTradingDay+ "/"+filename, 'wb')
+    csvfile = file(filename, 'wb')
     csvfile.write(codecs.BOM_UTF8)
     writer=csv.writer(csvfile)
-
     writer.writerows(listdata)
     csvfile.close()

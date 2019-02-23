@@ -43,8 +43,10 @@ class InfoApi:
         self.QryPositionInstrumentID=InstrumentID
         self.QryPositionTradingDay=TradingDay
 
-    def Set_StagePosition(self,ExchnageID,begin,end):
-        self.StagePositionExchangeID=ExchnageID
+    def Set_StagePosition(self,ExchangeID, Surl, code,begin,end):
+        self.StagePositionExchangeID=ExchangeID
+        self.StagePositionurl=Surl
+        self.StagePositionCode = code
         self.StagePositionBeginTime = begin
         self.StagePositionEndTime=end
 
