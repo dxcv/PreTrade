@@ -64,7 +64,6 @@ def ListDataToExcel(info,listdata,ext):
         os.mkdir(parent+ "/" + info.QryPositionExchangeID + "/" + info.QryPositionTradingDay)
     filename=info.QryPositionTradingDay+"_"+info.QryPositionInstrumentID+ext
 
-
     # file_backup=f = codecs.open(parent+info.QryPositionExchangeID+"/"+filename,'wb','utf-8')
     csvfile = file(parent+info.QryPositionExchangeID+"/" + info.QryPositionTradingDay+ "/"+filename, 'wb')
     csvfile.write(codecs.BOM_UTF8)
