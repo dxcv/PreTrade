@@ -38,7 +38,8 @@ if __name__=="__main__":
     else:
         startdate = datetime.datetime.strptime("20170101", "%Y%m%d")
     enddate=datetime.datetime.now()
-
+    enddate=t.NextTradingDay(enddate.strftime("%Y%m%d"),True)
+    enddate=datetime.datetime.strptime(enddate,"%Y%m%d")
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
         col=[]
         tempstartday=startdate.strftime("%Y%m%d").strip()
