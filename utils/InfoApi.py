@@ -313,3 +313,5 @@ class InfoApi:
 
     def GetChineseToEnglish(self):
         temp={"交易所":"ExchangeID","交易代码":"InstrumentCode","最小变动价位":"PriceTick","合约乘数":"VolumeMultiple","合约月份":"InstrumentMonth","最低交易保证金":"MinMargin","最后交易日":""}
+
+

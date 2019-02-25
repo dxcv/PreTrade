@@ -95,6 +95,25 @@ class TradingDay:
         return True
 
 
+    def IsTradingDayS(self, day):
+        """判断某一日是否为交易日,只适用于2017/2018/2019"""
+        if day in self.Holiday:
+            return False
+        if datetime.datetime.strptime(day, "%Y%m%d").weekday() == 6 or datetime.datetime.strptime(day,"%Y%m%d").weekday() == 5:
+            return False
+        return True
+
+    def IsEveningOpen(self,day):
+        """判断是否有夜盘"""
+        lastday=self.NextTradingDay(day,False)
+        nextday=NextDay(lastday)[0]
+        if nextday in self.Holiday:
+            return 0
+        else:
+            return 1
+
+
+
     def GetLastNumTradingday(self,tradingday,num):
         """
             计算某个交易日的后几个交易日时间
