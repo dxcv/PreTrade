@@ -10,7 +10,7 @@ sys.path.append(dir_path)
 from utils.InfoApi import *
 from utils.Mysplider import *
 from PositionAPI import *
-from utils.TradingDay import *
+from utils.TradingDay import NextTradingDay
 
 
 
