@@ -104,6 +104,8 @@ def GetCFFEXProduct(mysplider, info, ExchangeID):
             mysql.ExecNonQuery(updatesql % (href, InstrumentName))
 
 if __name__=='__main__':
+    print """你确定要执行此脚本？执行完成后还要修改相应交易时间"""
+    raise Exception
     Instrument={}
     temp={}
     info=InfoApi()
