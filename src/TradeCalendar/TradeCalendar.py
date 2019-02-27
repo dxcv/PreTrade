@@ -13,7 +13,7 @@ import xlwt
 
 def main(info):
     columnsIndex=dict()
-    nowTime="20190212"
+    nowTime="20190227"
     now=datetime.datetime.strptime(nowTime,"%Y%m%d")
     filename=str(now.strftime("%Y%m%d")+'交易日历'+".xls").strip()
     basicapi=BasicAPI()
