@@ -16,7 +16,7 @@ from utils.InfoApi import *
 
 
 sql="INSERT INTO [StatisticData].[dbo].[Calender]([Date],IsTradingDay,IsEveningOpen,[PreTradingDay],[NextTradingDay]) VALUES('%s',%s,%s,'%s','%s')"
-existsql="select [Date]  from [StatisticData].[dbo].[Calender] order by Date desc"
+existsql="select top 1 [Date]  from [StatisticData].[dbo].[Calender] order by Date desc"
 
 
 def datatolist(data):
@@ -34,13 +34,13 @@ if __name__=="__main__":
     temp=info.mysql.ExecQueryGetList(existsql)
     t = TradingDay(info)
     if len(temp):
-        startdate = datetime.datetime.strptime(temp[0], "%Y-%m-%d")
+        startdate = datetime.datetime.strptime(temp[0], "%Y-%m-%d")+datetime.timedelta(days=1)
     else:
         startdate = datetime.datetime.strptime("20170101", "%Y%m%d")
     enddate=datetime.datetime.now()
     enddate=t.NextTradingDay(enddate.strftime("%Y%m%d"),True)
     enddate=datetime.datetime.strptime(enddate,"%Y%m%d")
-    while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
+    while startdate.strftime("%Y%m%d") < enddate.strftime("%Y%m%d"):
         col=[]
         tempstartday=startdate.strftime("%Y%m%d").strip()
         if t.IsTradingDayS(startdate.strftime("%Y%m%d")):
@@ -55,7 +55,8 @@ if __name__=="__main__":
         col.append(nextday)
         templist.append(tuple(col))
         startdate = startdate+datetime.timedelta(days=1)
-    info.mysql.ExecmanysNonQuery(sql,templist)
+    if len(templist):
+        info.mysql.ExecmanysNonQuery(sql,templist)
 
 
 
