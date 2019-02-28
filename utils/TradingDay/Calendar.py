@@ -40,7 +40,7 @@ if __name__=="__main__":
     enddate=datetime.datetime.now()
     enddate=t.NextTradingDay(enddate.strftime("%Y%m%d"),True)
     enddate=datetime.datetime.strptime(enddate,"%Y%m%d")
-    while startdate.strftime("%Y%m%d") < enddate.strftime("%Y%m%d"):
+    while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
         col=[]
         tempstartday=startdate.strftime("%Y%m%d").strip()
         if t.IsTradingDayS(startdate.strftime("%Y%m%d")):
