@@ -34,6 +34,8 @@ if __name__=="__main__":
 
     t = TradingDay(info)
     startdate = datetime.datetime.strptime("20180601", "%Y%m%d")
+    startdate =datetime.datetime.now()
+
     enddate = datetime.datetime.now()
     mysplider = info.mysplider
 
