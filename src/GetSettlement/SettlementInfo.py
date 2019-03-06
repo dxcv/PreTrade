@@ -7,10 +7,12 @@
 """
 import sys
 import os,datetime
+from multiprocessing import Process
 dir_path=os.path.dirname(os.path.abspath(".."))
 sys.path.append(dir_path)
 from utils.InfoApi import *
 from SettlementInfoAPI import *
+import threading
 from utils.Mysplider import *
 
 
@@ -20,10 +22,28 @@ def main(startdate, mysplider,info):
     获取四大交易所的日统计信息
     :return:
     """
+    starttime = datetime.datetime.now()
     GetSettlementInfo(info,startdate,"DCE")                 #大商所日统计信息
     GetSettlementInfo(info,startdate,"CZCE")                #郑商所日统计信息
     GetSettlementInfo(info,startdate, "SHFE")                #上期所日统计信息
     GetSettlementInfo(info,startdate,"CFFEX")               #中金所日统计信息
+    endtime = datetime.datetime.now()
+    print (endtime - starttime).seconds
+
+    # """多线程版本"""
+    # starttime = datetime.datetime.now()
+    # ExchangeList=info.GetAllExchange()
+    # threads=[]
+    # for i in ExchangeList:
+    #     t=threading.Thread(target=GetSettlementInfo,args=(info,startdate,i))
+    #     threads.append(t)
+    # for t in threads:
+    #     t.start()
+    # for t in threads:
+    #     t.join()
+    # endtime = datetime.datetime.now()
+    # print (endtime - starttime).seconds
+
 
 if __name__=="__main__":
     info=InfoApi()
@@ -31,7 +51,7 @@ if __name__=="__main__":
     info.Get_Msplider()
 
     t = TradingDay(info)
-    startdate = datetime.datetime.strptime("20190125", "%Y%m%d")
+    startdate = datetime.datetime.strptime("20190301", "%Y%m%d")
     enddate = datetime.datetime.now()
     mysplider = info.mysplider
 

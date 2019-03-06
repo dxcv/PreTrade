@@ -11,6 +11,7 @@ from utils.sqlServer import *
 from utils.BasicAPI import *
 from  data.setting import *
 from utils.Mysplider import *
+from utils.ThreadSqlServer import *
 from MyDate import *
 import calendar
 
@@ -66,10 +67,10 @@ class InfoApi:
         获取历史行情数据库链接
         :return:
         """
-        if self.HistoryDbconn is None:
-            temp=self.setting.HistoryDbInfo()
-            self.HistoryDbconn=Mysql(temp[0],temp[1],temp[2],temp[3])
-            self.mysql=self.HistoryDbconn
+
+        temp=self.setting.HistoryDbInfo()
+        self.HistoryDbconn=SqlServer(temp[0],temp[1],temp[2],temp[3])
+        self.mysql=self.HistoryDbconn
         return self.mysql
 
     def DisConnectDbHistory(self):
