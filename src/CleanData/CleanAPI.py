@@ -189,9 +189,11 @@ def specialdata(hms,TradTime):
     night['4']=['023000']
     if hms in temp[TradTime[0]]:
         return True
-    if hms in night[TradTime[1]]:
-        return True
-
+    try:
+        if hms in night[TradTime[1]]:
+            return True
+    except:
+        return False
     return False
 
 

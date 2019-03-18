@@ -48,7 +48,7 @@ def  Level_5_clean(filename, fileDirectory, info):
         print  "u'源数据文件不存在,或请先关闭文件",info.cleanDatadict[0],info.cleanDatadict[1]
         return
     length = len(csv_data) - 1
-    backup_name =info.cleanDatadict[1]+"_"+info.cleanDatadict[0]+".csv"
+    backup_name =info.cleanDatadict[2]+"_"+info.cleanDatadict[0]+".csv"
     backup_csvfile = IshaveFile(backup_name, info.cleanDatadict[3], False, "wb")
     writer = csv.writer(backup_csvfile)
     code=info.cleanDatadict[1]

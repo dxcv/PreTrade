@@ -56,7 +56,7 @@ def Level_1_Clean(filename, fileDirectory, info):
     length = len(csv_data)-1
     firstdata = datetime.datetime.strptime(str(csv_data.at[0, '最后修改时间']), '%H:%M:%S').strftime("%H:%M:%S")
     starthms, endhms = GetSEndHms(TradTime,firstdata)
-    backup_name = info.cleanDatadict[1] + "_" + info.cleanDatadict[0] + ".csv"
+    backup_name = info.cleanDatadict[2] + "_" + info.cleanDatadict[0] + ".csv"
     backup_csvfile = IshaveFile(backup_name, info.cleanDatadict[3], False, "wb")
     writer = csv.writer(backup_csvfile)
     col=[]

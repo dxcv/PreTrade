@@ -28,32 +28,46 @@ def CleanData(info):
 
 if __name__=='__main__':
 
-    ProductCodeList=['ni']
+
     # ProductCodeList = ['ni']
     StartDay="20190315"
     # StartDay = "20190201"
-    storeDirectory="D:/DATA/MinutesData/"
+    storeDirectory="D:/DATA/CleanedData/"
 
     """Read SqlServer Get Main InstrumentID by ProductCode"""
     pass
 
     info = InfoApi()
     info.GetDbHistoryConnect()
-
+    ProductCodeList =info.GetAllProductCode()
     t = NextTradingDay.TradingDay(info)
     # enddate = datetime.datetime.now()-datetime.timedelta(days=1)
     enddate = datetime.datetime.strptime("20190315","%Y%m%d")
-    for i in tqdm(ProductCodeList):
-        StartDay = "20190315"
-        startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
-        while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
-            print startdate
+
+    startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
+    while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
+        threadList=list()
+        threadNum=4
+        for i in tqdm(ProductCodeList):
             IsExistdiretory(startdate.strftime("%Y%m%d"),storeDirectory)
-            MainInstrument=info.GetMainInstrumentIdByProductCode(i,startdate.strftime("%Y-%m-%d"))
-            info.cleanDatadict = [startdate.strftime("%Y%m%d"), i,MainInstrument,storeDirectory+startdate.strftime("%Y%m%d")+"/"]
-            CleanData(info)
-            startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)
-            startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
+            code = info.GetCodeByInstrumentID(i)
+            MainInstrument=info.GetMainInstrumentIdByProductCode(code,startdate.strftime("%Y-%m-%d"))
+            info.cleanDatadict = [startdate.strftime("%Y%m%d"), code,MainInstrument,storeDirectory+startdate.strftime("%Y%m%d")+"/"]
+            threadNum=threading.Thread(target=CleanData,args=(info,))
+            threadNum.setDaemon(True)
+            threadNum.start()
+            threadNum.join()
+            # threadList.append(threadNum)
+            # if len(threadList)==threadNum:
+            #     for i in threadList:
+            #         i.start()
+            #     for i in threadList:
+            #         i.join()
+            #     threadList=[]
+            # # CleanData(info)
+
+        startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)
+        startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
 
     info.mysql.Disconnect()
 
