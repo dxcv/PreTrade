@@ -9,6 +9,7 @@ from utils.TradingDay import  NextTradingDay
 from Level5Clean import *
 from Level1Clean import *
 from utils.BasicAPI import *
+import threading
 
 def Getdirector(info):
     if info.cleanDatadict[1] in info.setting.level5:
@@ -27,11 +28,11 @@ def CleanData(info):
 
 if __name__=='__main__':
 
-    ProductCodeList=['ni','au','ag','rb','i','m','TA']
+    ProductCodeList=['ni']
     # ProductCodeList = ['ni']
-    StartDay="20180801"
+    StartDay="20190315"
     # StartDay = "20190201"
-    storeDirectory="D:/DATA/MainIstrument/some/"
+    storeDirectory="D:/DATA/MinutesData/"
 
     """Read SqlServer Get Main InstrumentID by ProductCode"""
     pass
@@ -41,9 +42,9 @@ if __name__=='__main__':
 
     t = NextTradingDay.TradingDay(info)
     # enddate = datetime.datetime.now()-datetime.timedelta(days=1)
-    enddate = datetime.datetime.strptime("20190201","%Y%m%d")
+    enddate = datetime.datetime.strptime("20190315","%Y%m%d")
     for i in tqdm(ProductCodeList):
-        StartDay = "20180801"
+        StartDay = "20190315"
         startdate = datetime.datetime.strptime(StartDay, "%Y%m%d")
         while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
             print startdate
