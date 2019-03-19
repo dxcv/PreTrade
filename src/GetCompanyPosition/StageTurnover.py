@@ -31,7 +31,7 @@ if __name__=="__main__":
     info.Get_Msplider()
 
     t = TradingDay(info)
-    startdate = datetime.datetime.strptime("20190225", "%Y%m%d")
+    startdate = datetime.datetime.strptime("20190308", "%Y%m%d")
     startdate=info.mydate.GetCurrentB(startdate)
     enddate = datetime.datetime.now()
     enddate=info.mydate.GetNextmonthB(enddate)
