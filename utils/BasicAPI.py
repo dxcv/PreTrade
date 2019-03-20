@@ -187,8 +187,8 @@ class BasicAPI:
                     col.append(TradeCode + self.nextyear +monthList[i+index])
         if TradeCode=='wr':
             pass
-        if self.lastCode.has_key(TradeCode):
-            col=col[col.index(self.lastCode[TradeCode]):]
+        if self.lastCode.has_key(TradeCode) and self.lastCode[TradeCode] in col:
+                col=col[col.index(self.lastCode[TradeCode]):]
         # if TradeCode in info.setting.lastCode.keys():
         #     tempindex=self.BinarySeach(0,len(col),info.setting.lastCode[TradeCode])
         #     col=col.remove(info.setting.lastCode[TradeCode])
