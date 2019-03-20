@@ -160,7 +160,7 @@ class InfoApi:
         if tradingDay in self.tradingDayInstrument.keys():
             return self.tradingDayInstrument[tradingDay]
         else:
-            self.tradingDayInstrument[tradingDay]=dict()
+            self.tradingDayInstrument=dict()
             tradingDay=datetime.datetime.strptime(tradingDay,"%Y%m%d")
             if self.mysql is None:
                 self.GetDbHistoryConnect()
@@ -173,7 +173,7 @@ class InfoApi:
                 temp=self.Get_BasicApi().GetInstrumentMonth(self, InstrumentId, ExchangeId, tradingDay)
                 for i in temp:
                     tempfuture[i]=ExchangeId
-            self.tradingDayInstrument[tradingDay]=tempfuture
+            self.tradingDayInstrument[tradingDay.strftime("%Y%m%d")]=tempfuture
             return tempfuture
 
     def GetCodeByName(self,name):
