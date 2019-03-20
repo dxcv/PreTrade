@@ -23,9 +23,11 @@ def main(info):
     templist=GetSywg(info)
     # templist=GetYhqh(info)
     # templist=GetZhongxin(info)
-    # templist=GetBohai(info)
+    templist=GetBohai(info,'2')
+    info.mysql.Disconnect()
 
-def GetBohai(info):
+def GetBohai(info,Type):
+    tempdict=dict()
     header = {
         'Accept': 'text/html, application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         'Cache-Control': 'no-cache',
@@ -38,10 +40,10 @@ def GetBohai(info):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36',
         'Pragma': 'no - cache',
     }
-    if datetime.datetime.now().strftime("%H%M%S")<"150000":
-        date=datetime.datetime.now().strftime("%Y-%m-%d")
+    if datetime.datetime.now().strftime("%H%M%S")<"180000":
+        date=datetime.datetime.now()
     else:
-        date=datetime.datetime.now()+datetime.timedelta(days=1).strftime("%Y-%m-%d")
+        date=(datetime.datetime.now()+datetime.timedelta(days=1))
     html = info.mysplider.getUrlcontent(bohaiUrl, header=header)
     bs = BeautifulSoup(html, "html.parser")
     divdata = bs.find("table")
@@ -52,11 +54,24 @@ def GetBohai(info):
             product=td[-2].get_text()
             # product=re.findall(r'[(|（](.*?)[)|）]',product)[0]
             product = re.findall(r'[a-zA-Z]+', product)[0]
-            ExchangeID=info.GetExchangeByCode(product)
             margintation=float(str(td[-1].get_text()).strip().replace("%",""))/100
-            print date,ExchangeID,product,margintation
+            tempdict[product]=margintation
         except:
             pass
+    # for i in tempdict:
+    #     print i,tempdict[i]
+
+    FutureInstrumentList=info.GetAllTradeInstrumentByTradingDay(date.strftime("%Y%m%d"))
+    print len(FutureInstrumentList)
+    templist=list()
+    for i in FutureInstrumentList.keys():
+        ExchangeId = FutureInstrumentList[i]
+        code, num = info.GetDetailByInstrumentID(i, ExchangeId)
+        margintation=tempdict[code]
+        col = [date.strftime("%Y-%m-%d"), i, ExchangeId, margintation]
+        templist.append(col)
+    info.mysql.UpdateMarginExample(templist, Type)
+
 
 
 
