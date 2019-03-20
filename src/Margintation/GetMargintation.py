@@ -16,13 +16,48 @@ from utils.BasicAPI import *
 YhqhUrl="https://www.yhqh.com.cn/list-431-1.html"
 SywgUrl="http://www.sywgqh.com.cn/Pc/Common?page=1&rows=10&topicCode=Cover_Cost"
 zhongxinUrl="https://www.citicsf.com/e-futures/csc/000205/article/list"
-
+bohaiUrl="http://www.bhfcc.com/customer-center-tool_cid_47.html"
 
 
 def main(info):
     templist=GetSywg(info)
     # templist=GetYhqh(info)
     # templist=GetZhongxin(info)
+    # templist=GetBohai(info)
+
+def GetBohai(info):
+    header = {
+        'Accept': 'text/html, application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Cache-Control': 'no-cache',
+        'Content-Language': 'zh - CN',
+        'Cookie': 'CITICSFID=5e234530-a085-4b66-93cf-0802b2fdd97a; CITICF_SESSION_EFUTURRES=C1ED2755FB3344115793DA52A14BC2AA; __jsluid=3a1e4391da46135c95e69a023c26201b; Hm_cv_eb9b2943105704fc985fd700527c1a9e=*!1*userType*%E6%B8%B8%E5%AE%A2; Hm_lvt_eb9b2943105704fc985fd700527c1a9e=1548990403,1548990557,1549002085; Hm_lpvt_eb9b2943105704fc985fd700527c1a9e=1549003175',
+        'Host': 'www.bhfcc.com',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Referer': 'http://www.bhfcc.com/customer-center-treaty_cid_49.html',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36',
+        'Pragma': 'no - cache',
+    }
+    if datetime.datetime.now().strftime("%H%M%S")<"150000":
+        date=datetime.datetime.now().strftime("%Y-%m-%d")
+    else:
+        date=datetime.datetime.now()+datetime.timedelta(days=1).strftime("%Y-%m-%d")
+    html = info.mysplider.getUrlcontent(bohaiUrl, header=header)
+    bs = BeautifulSoup(html, "html.parser")
+    divdata = bs.find("table")
+    divdata=divdata.findAll("tr")[1:]
+    for i in divdata[:-1]:
+        td=i.findAll("td")
+        try:
+            product=td[-2].get_text()
+            # product=re.findall(r'[(|（](.*?)[)|）]',product)[0]
+            product = re.findall(r'[a-zA-Z]+', product)[0]
+            ExchangeID=info.GetExchangeByCode(product)
+            margintation=float(str(td[-1].get_text()).strip().replace("%",""))/100
+            print date,ExchangeID,product,margintation
+        except:
+            pass
+
 
 
 def  GetZhongxin(info):
@@ -127,7 +162,7 @@ def GetYhqhContent(info,date,url):
                         tempname=info.setting.ProductName[j]
                     else:
                         tempname=j
-                    print tempname
+                    # print tempname
                     tempcode=info.GetCodeByName(tempname)
                     if str(tempname).strip().find("(") != -1:
                         print "---------------------", tempname
