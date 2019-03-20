@@ -5,6 +5,10 @@
 # 1、    银河  GetYhqh(info)
 # 2、    中信
 # 3、    申银万国
+# 4、    渤海
+# 5、    东航
+
+
 
 
 from utils.InfoApi import *
@@ -17,14 +21,15 @@ YhqhUrl="https://www.yhqh.com.cn/list-431-1.html"
 SywgUrl="http://www.sywgqh.com.cn/Pc/Common?page=1&rows=10&topicCode=Cover_Cost"
 zhongxinUrl="https://www.citicsf.com/e-futures/csc/000205/article/list"
 bohaiUrl="http://www.bhfcc.com/customer-center-tool_cid_47.html"
+donghangUel="https://www.cesfutures.com/page/gsgg/#/index/jyfl/bzj"
 
 
 def main(info):
-    templist=GetSywg(info)
+    # templist=GetSywg(info)
     # templist=GetYhqh(info)
-    # templist=GetZhongxin(info)
-    templist=GetBohai(info,'2')
-    info.mysql.Disconnect()
+    templist=GetZhongxin(info)
+    # templist=GetBohai(info,'2')
+    # info.mysql.Disconnect()
 
 def GetBohai(info,Type):
     tempdict=dict()
