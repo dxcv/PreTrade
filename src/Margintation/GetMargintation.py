@@ -17,19 +17,63 @@ import re
 import datetime
 from utils.TradingDay import *
 from utils.BasicAPI import *
+import json
 YhqhUrl="https://www.yhqh.com.cn/list-431-1.html"
 SywgUrl="http://www.sywgqh.com.cn/Pc/Common?page=1&rows=10&topicCode=Cover_Cost"
 zhongxinUrl="https://www.citicsf.com/e-futures/csc/000205/article/list"
 bohaiUrl="http://www.bhfcc.com/customer-center-tool_cid_47.html"
-donghangUel="https://www.cesfutures.com/page/gsgg/#/index/jyfl/bzj"
-
+# donghangUrl="https://www.cesfutures.com/page/gsgg/#/index/jyfl/bzj"
+donghangUrl="https://www.cesfutures.com/RESTfull/pz/bzj/list.json"
 
 def main(info):
     # templist=GetSywg(info)
     # templist=GetYhqh(info)
-    templist=GetZhongxin(info)
+    # templist=GetZhongxin(info)
     # templist=GetBohai(info,'2')
+    templist=GetDonghang(info)
     # info.mysql.Disconnect()
+
+
+def GetDonghang(info):
+    Type='3'
+    tabledict={'CZCE':0,'SHFE':1,'DCE':2,'CFFEX':3,'ine':4}
+    tempdict=dict()
+    header = {
+        'Accept': 'text/html, application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Cache-Control': 'no-cache',
+        'Content-Language': 'zh - CN',
+        'Host': 'www.cesfutures.com',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36',
+        'Pragma': 'no - cache',
+    }
+    html = info.mysplider.getUrlcontent(donghangUrl, header=header)
+    jsondata=json.loads(html)
+    tempdata=jsondata['data']['table']
+    if datetime.datetime.now().strftime("%H%M%S") < "180000":
+        date = datetime.datetime.now()
+    else:
+        date = (datetime.datetime.now() + datetime.timedelta(days=1))
+    for i in tempdata:
+        tempi=i['list']
+        for j in tempi:
+            code =str(j['1'].encode("utf-8")).strip().split(" ")[0]
+            margintation = float(str(j['4'].encode("utf-8")).strip().replace("%", "")) / 100
+            tempdict[code] =margintation
+            # downuplimit=str(j['6'].encode("utf-8")).strip()
+            # print code,margintation,downuplimit
+
+    FutureInstrumentList = info.GetAllTradeInstrumentByTradingDay(date.strftime("%Y%m%d"))
+    print len(FutureInstrumentList)
+    templist = list()
+    for i in FutureInstrumentList.keys():
+        ExchangeId = FutureInstrumentList[i]
+        code, num = info.GetDetailByInstrumentID(i, ExchangeId)
+        margintation = tempdict[code]
+        col = [date.strftime("%Y-%m-%d"), i, ExchangeId, margintation]
+        templist.append(col)
+    info.mysql.UpdateMarginExample(templist, Type)
 
 def GetBohai(info,Type):
     tempdict=dict()
