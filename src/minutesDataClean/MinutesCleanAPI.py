@@ -6,7 +6,7 @@ import datetime
 def nextdurationTime(time,TradTime):
     """计算时间断层问题，将时间链接起来"""
     dict1=dict()
-    dict0={'0':{"1016":'1030','1131':'1330'},'1':{'1131':'1330'},'2':{'1131':'1330'}}
+    dict0={'0':{"1016":'1030','1129':'1332'},'1':{'1131':'1330'},'2':{'1131':'1330'}}
     list0=["0905",'0915','0930']
 
     dict1['0']={}
@@ -99,9 +99,9 @@ def isintimerange(hms,TradTime):
         elif TradTime[0]=='0' and TradTime[1]=='3':
             if mystrptime(hms) >= mystrptime("090500000") and mystrptime(hms) <= mystrptime("101500000"):
                 return True
-            elif mystrptime(hms) >= mystrptime("103000000") and mystrptime(hms) <= mystrptime("113000000"):
+            elif mystrptime(hms) >= mystrptime("103000000") and mystrptime(hms) <= mystrptime("112800000"):
                 return True
-            elif mystrptime(hms) >= mystrptime("133000000") and mystrptime(hms) <= mystrptime("145500000"):
+            elif mystrptime(hms) >= mystrptime("133200000") and mystrptime(hms) <= mystrptime("145500000"):
                 return True
             elif mystrptime(hms) >= mystrptime("210500000") and mystrptime(hms) <= mystrptime("235959500"):
                 return True
