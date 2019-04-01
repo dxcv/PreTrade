@@ -55,7 +55,7 @@ def MinutesCleanMain(source_file,instrumentID1,instrumentID2,startdate):
     #instrumentID1 = 'ni1906'
     #instrumentID2 = 'ni1907'
     saveDirector="D:/DATA/MinutesData/storeDirectory/ones/"+startdate.strftime("%Y%m%d")+"/"
-    savafile = storeDirectory+instrumentID2 + "-" + instrumentID1 + "spread.xlsx"
+    savafile = saveDirector+instrumentID2 + "-" + instrumentID1 + "spread.xlsx"
     filename1 = instrumentID1+"_"+startdate.strftime("%Y%m%d")+".csv"
     filename2 = instrumentID2 + "_" + startdate.strftime("%Y%m%d") + ".csv"
     # filename2 = "ni1907_20190326.csv"
