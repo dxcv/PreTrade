@@ -7,6 +7,7 @@ import csv,os,codecs,datetime
 import pandas as pd
 import xlwt
 import threading
+import json
 
 
 def ResultToDatabase(info,result,sql):
@@ -176,3 +177,21 @@ def ListDataToExcel(listdata,filename):
     writer.save()
     os.remove(filename)
 
+def GetSHFEPosition(info,TradingDay,ExchangeID):
+    templists=[]
+    url="http://www.shfe.com.cn/data/dailydata/kx/pm"+TradingDay.strftime("%Y%m%d")+".dat"
+    header={
+
+    }
+    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[ParticipantID1],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantID2],[ParticipantIDABBR2]" \
+                ",[CJ2],[CJ2_CHG],[ParticipantID3],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
+    html=info.mysplider.getUrlcontent(url,header=header)
+    data=json.loads(html)
+    data=data['o_cursor']
+    for i in data:
+        col=[]
+        if str(i['INSTRUMENTID']).find("all")==-1:
+            col = [TradingDay.strftime('%Y-%m-%d'), str(i['INSTRUMENTID']).strip(), ExchangeID, str(i['RANK']).strip(), str(i['PARTICIPANTID1']).strip(),str(i['PARTICIPANTABBR1']).strip(), str(i['CJ1']).strip(), str(i['CJ1_CHG']).strip(),str(i['PARTICIPANTID2']).strip(),str(i['PARTICIPANTABBR2']).strip(), str(i['CJ2']).strip(), str(i['CJ2_CHG']).strip(),str(i['PARTICIPANTID3']).strip(),str(i['PARTICIPANTABBR3']).strip(), str(i['CJ3']).strip(), str(i['CJ3_CHG']).strip()]
+            if int(col[3])<=20:
+                templists.append(tuple(col))
+    ResultToDatabase(info,templists,insertsql)

@@ -25,6 +25,10 @@ def main(startdate, mysplider,info):
         GetDCEPosition(info,startdate,"DCE")         #大商所持仓信息
     else:
         print "DCE数据已经存在"
+    if not 'SHFE' in templist:
+        GetSHFEPosition(info, startdate, "SHFE")  # 大商所持仓信息
+    else:
+        print "DCE数据已经存在"
     # GetDCEStagedTurnover(info,startdate,"DCE")      #阶段性成交
 
 
