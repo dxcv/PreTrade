@@ -19,6 +19,8 @@ def GetDCEPosition(info,TradingDay,ExchangeID):
     sql="select InstrumentID from SettlementInfo where TradingDay='%s' and Position>20000 and ExchangeID='%s' and IsFuture=1"%(TradingDay.strftime("%Y-%m-%d"),ExchangeID)
     insertsql="INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantIDABBR2]" \
               ",[CJ2],[CJ2_CHG],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
+    isexistsql = "select distinct [ExchangeID] from [Position_Top20] where TradingDay='%s'" % TradingDay.strftime(
+        "%Y-%m-%d")
     templist=info.mysql.ExecQueryGetList(sql)
     for i in templist:
         code = str(re.match(r"\D+", i).group())
@@ -28,14 +30,17 @@ def GetDCEPosition(info,TradingDay,ExchangeID):
         info.Set_QryPosition(ExchangeID,url, code, i,TradingDay.strftime("%Y%m%d"))
         temp=GetDCEPositionProductData(info,i,TradingDay.strftime("%Y-%m-%d"))
         result=result+temp
-    ResultToDatabase(info,result,insertsql)
+    eixstlist = info.mysql.ExecQueryGetList(isexistsql)
+    if not  ExchangeID in eixstlist:
+        ResultToDatabase(info,result,insertsql)
+
 
 
 
 
 def GetDCEPositionProductData(info,InstrumentID,TradingDay):
     templists=list()
-    ext=".csv"
+    exclelist=list()
     header = {
         'Connection': 'keep-alive',
         'Cache-Control': 'no-cache',
@@ -54,6 +59,7 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
     """write to database"""
     for i in listdata[1:-1]:
         col=[]
+        excelcol=[]
         Rank=i[0]
         ExchangeID='DCE'
         ParticipantABBR1=i[1]
@@ -66,7 +72,11 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
         CJ3=i[10]
         CJ3_CHG=i[11]
         col=[TradingDay,InstrumentID,ExchangeID,Rank,'0',ParticipantABBR1,CJ1,CJ1_CHG,ParticipantABBR2,CJ2,CJ2_CHG,ParticipantABBR3,CJ3,CJ3_CHG]
+        excelcol=[int(Rank),ParticipantABBR1,int(CJ1),int(CJ1_CHG),int(Rank),ParticipantABBR2,int(CJ2),int(CJ2_CHG),int(Rank),ParticipantABBR3,int(CJ3),int(CJ3_CHG)]
+        exclelist.append(excelcol)
         templists.append(tuple(col))
+    columns = [u'名次', u'会员简称', u'成交量(手)', u'增减', u'名次1',u'会员简称1', u'持买单量1', u'增减1',u'名次2', u'会员简称2', u'持卖单量2', u'增减2']
+    excelDataToExcel(exclelist,ExchangeID,columns,info.QryPositionTradingDay,info.QryPositionInstrumentID)
 
     # """write to xls"""
     # parent = "D:/GitData/PositionData/"
@@ -79,6 +89,32 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
     # ListDataToExcel(listdata,filename)
     return templists
     # raise Exception
+
+def excelDataToExcel(datalist,ExchangeID,columns,TradingDay,InstrumentID):
+    df = pd.DataFrame(data=datalist, columns=columns)
+    saveDirector = "D:/GitData/Top20Position/" + ExchangeID + "/" + TradingDay + "/"
+    if not os.path.exists(saveDirector):
+        os.mkdir(saveDirector)
+    savafile = saveDirector + TradingDay + "_" + InstrumentID + ".xlsx"
+    writer = pd.ExcelWriter(savafile, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1', startrow=0, startcol=0, index=None)
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    if len(columns)==12:
+        worksheet.set_column('A:L', 15)
+    elif len(columns)==14:
+        worksheet.set_column('A:N', 15)
+    # Add a header format.
+    header_format = workbook.add_format({
+        'bold': True,
+        'text_wrap': True,
+        'valign': 'vcenter',
+        'border': 1
+    })
+    header_format.set_align('center')
+    header_format.set_align('vcenter')
+    writer.save()
+
 
 def GetDCEStagedTurnover(info,TradingDay,ExchangeID):
     beginmonth=TradingDay.strftime("%Y%m")

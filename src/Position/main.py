@@ -20,20 +20,20 @@ def main(startdate, mysplider,info):
     :return:
     """
     isexistsql="select distinct [ExchangeID] from [Position_Top20] where TradingDay='%s'"%startdate.strftime("%Y-%m-%d")
-    templist=info.mysql.ExecQueryGetList(isexistsql)
-    if not 'DCE' in templist:
-        GetDCEPosition(info,startdate,"DCE")            #大商所持仓信息
-    else:
-        print "DCE数据已经存在"
-    if not 'SHFE' in templist:
-        GetSHFEPosition(info, startdate, "SHFE")        # 上期所
-    else:
-        print "SHFE数据已经存在"
-    if not 'CZCE' in templist:
-        GetCZCEPosition(info, startdate, "CZCE")        # 郑商所
-    else:
-        print "CZCE数据已经存在"
-    # GetDCEStagedTurnover(info,startdate,"DCE")      #阶段性成交
+
+    # if not 'DCE' in templist:
+    GetDCEPosition(info,startdate,"DCE")            #大商所持仓信息
+    # else:
+    #     print "DCE数据已经存在"
+    # if not 'SHFE' in templist:
+    #     GetSHFEPosition(info, startdate, "SHFE")        # 上期所
+    # else:
+    #     print "SHFE数据已经存在"
+    # if not 'CZCE' in templist:
+    #     GetCZCEPosition(info, startdate, "CZCE")        # 郑商所
+    # else:
+    #     print "CZCE数据已经存在"
+    # # GetDCEStagedTurnover(info,startdate,"DCE")      #阶段性成交
 
 
 
