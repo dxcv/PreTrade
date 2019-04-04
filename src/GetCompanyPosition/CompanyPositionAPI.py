@@ -102,7 +102,7 @@ def GetDCEStagePosition(info):
                 templist.append(tuple(col))
     columns = [u'名次', u'会员号', u'会员名称', u'成交量(手)', u'成交量比重', u'名次1', u'会员号1', u'会员名称1', u'成交金额(亿元)', u'成交额比重']
     df = pd.DataFrame(data=templist, columns=columns)
-    saveDirector = "D:/GitData/StagePosition/" + info.StagePositionExchangeID + "/" + begindate + "/"
+    saveDirector = "D:/GitData/StagePosition/" + info.StagePositionExchangeID +"/"+"month"+ "/" + begindate + "/"
     if not os.path.exists(saveDirector):
         os.mkdir(saveDirector)
     savafile = saveDirector + begindate + "_" + InstrumentID + ".xlsx"
