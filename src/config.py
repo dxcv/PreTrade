@@ -11,7 +11,7 @@ SELECT TOP (2)
       TradingDay,
 	  InstrumentID,
       [SettlementPrice]
-  FROM [PreTrade].[dbo].[SettlementDetail] where InstrumentID='CF905' or InstrumentID='CF909'    order by TradingDay desc
+  FROM [PreTrade].[dbo].[SettlementDetail] where InstrumentID='CF909' or InstrumentID='CF907'   order by TradingDay desc
 """
 def GetInstrument():
     pass
