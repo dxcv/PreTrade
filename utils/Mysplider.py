@@ -65,6 +65,7 @@ class MySplider:
 
     def tableTolistById(self, content, exchangeID,id):
         """
+        t通过table Id
         将网页的table里面的数据抽取到list中,并且去掉空格等
         :param content: html
         :return: list
