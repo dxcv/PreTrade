@@ -63,6 +63,38 @@ class MySplider:
                 tablelist.append(tuple(col))
         return tablelist
 
+    def tableTolistById(self, content, exchangeID,id):
+        """
+        将网页的table里面的数据抽取到list中,并且去掉空格等
+        :param content: html
+        :return: list
+        """
+        tablelist = []
+        bs = BeautifulSoup(content, "html.parser")
+        divdata = bs.find("table",id=id)
+        if divdata is None:
+            bs = BeautifulSoup(content, "lxml")
+            divdata = bs.find("table",id=id)
+        try:
+            trdata = divdata.findAll("tr")
+        except:
+            print "网络异常，部分数据爬取失败，重新运行"
+            return []
+        for tr in trdata:
+            td = tr.findAll("td")
+            col = []
+            if len(td) > 0:
+                for i in td:
+                    temp = str(i.text.strip().encode("utf-8")).strip().replace(",", "").replace("绝对值", '0').replace(
+                        "比例值", '1')
+                    if temp == '-':
+                        temp = temp.strip("-")
+                    col.append(temp)
+
+                col.insert(2, exchangeID)
+                tablelist.append(tuple(col))
+        return tablelist
+
     def tableTolistByNum(self,content,exchangeID,num):
         """
         通过第几个num将网页的table里面的数据抽取到list中,并且去掉空格等
