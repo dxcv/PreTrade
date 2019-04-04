@@ -105,8 +105,7 @@ class TradingDay:
 
     def IsEveningOpen(self,day):
         """判断是否有夜盘"""
-        lastday=self.NextTradingDay(day,False)
-        nextday=NextDay(lastday)[0]
+        nextday=NextDay(day)[0]
         if nextday in self.Holiday:
             return 0
         else:
