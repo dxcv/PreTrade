@@ -77,18 +77,8 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
         templists.append(tuple(col))
     columns = [u'名次', u'会员简称', u'成交量(手)', u'增减', u'名次1',u'会员简称1', u'持买单量1', u'增减1',u'名次2', u'会员简称2', u'持卖单量2', u'增减2']
     excelDataToExcel(exclelist,ExchangeID,columns,info.QryPositionTradingDay,info.QryPositionInstrumentID)
-
-    # """write to xls"""
-    # parent = "D:/GitData/PositionData/"
-    # if not os.path.exists(parent+ info.QryPositionExchangeID):
-    #     os.mkdir(parent  + info.QryPositionExchangeID)
-    # if not os.path.exists(parent  + info.QryPositionExchangeID + "/" + info.QryPositionTradingDay):
-    #     os.mkdir(parent + info.QryPositionExchangeID + "/" + info.QryPositionTradingDay)
-    # filename = info.QryPositionTradingDay + "_" + info.QryPositionInstrumentID + ext
-    # filename=parent+info.QryPositionExchangeID+"/"+ info.QryPositionTradingDay+"/"+filename
-    # ListDataToExcel(listdata,filename)
     return templists
-    # raise Exception
+
 
 def excelDataToExcel(datalist,ExchangeID,columns,TradingDay,InstrumentID):
     df = pd.DataFrame(data=datalist, columns=columns)

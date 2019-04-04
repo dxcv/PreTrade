@@ -19,7 +19,7 @@ def main(startdate, mysplider,info):
     获取四大交易所期货公司持仓信息
     :return:
     """
-    isexistsql="select distinct [ExchangeID] from [Position_Top20] where TradingDay='%s'"%startdate.strftime("%Y-%m-%d")
+    # isexistsql="select distinct [ExchangeID] from [Position_Top20] where TradingDay='%s'"%startdate.strftime("%Y-%m-%d")
 
     # if not 'DCE' in templist:
     GetDCEPosition(info,startdate,"DCE")            #大商所持仓信息
