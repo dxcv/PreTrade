@@ -17,8 +17,8 @@ def ResultToDatabase(info,result,sql):
 def GetDCEPosition(info,TradingDay,ExchangeID):
     result=list()
     sql="select InstrumentID from SettlementInfo where TradingDay='%s' and Position>20000 and ExchangeID='%s' and IsFuture=1"%(TradingDay.strftime("%Y-%m-%d"),ExchangeID)
-    insertsql="INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantIDABBR2]" \
-              ",[CJ2],[CJ2_CHG],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
+    insertsql="INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantIDABBR2]" \
+              ",[CJ2],[CJ2_CHG],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
     templist=info.mysql.ExecQueryGetList(sql)
     for i in templist:
         code = str(re.match(r"\D+", i).group())
@@ -65,7 +65,7 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
         ParticipantABBR3=i[9]
         CJ3=i[10]
         CJ3_CHG=i[11]
-        col=[TradingDay,InstrumentID,ExchangeID,Rank,ParticipantABBR1,CJ1,CJ1_CHG,ParticipantABBR2,CJ2,CJ2_CHG,ParticipantABBR3,CJ3,CJ3_CHG]
+        col=[TradingDay,InstrumentID,ExchangeID,Rank,'0',ParticipantABBR1,CJ1,CJ1_CHG,ParticipantABBR2,CJ2,CJ2_CHG,ParticipantABBR3,CJ3,CJ3_CHG]
         templists.append(tuple(col))
 
     # """write to xls"""
@@ -183,15 +183,54 @@ def GetSHFEPosition(info,TradingDay,ExchangeID):
     header={
 
     }
-    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[ParticipantID1],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantID2],[ParticipantIDABBR2]" \
-                ",[CJ2],[CJ2_CHG],[ParticipantID3],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
+    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantID1],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantID2],[ParticipantIDABBR2]" \
+                ",[CJ2],[CJ2_CHG],[ParticipantID3],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
     html=info.mysplider.getUrlcontent(url,header=header)
     data=json.loads(html)
     data=data['o_cursor']
     for i in data:
         col=[]
         if str(i['INSTRUMENTID']).find("all")==-1:
-            col = [TradingDay.strftime('%Y-%m-%d'), str(i['INSTRUMENTID']).strip(), ExchangeID, str(i['RANK']).strip(), str(i['PARTICIPANTID1']).strip(),str(i['PARTICIPANTABBR1']).strip(), str(i['CJ1']).strip(), str(i['CJ1_CHG']).strip(),str(i['PARTICIPANTID2']).strip(),str(i['PARTICIPANTABBR2']).strip(), str(i['CJ2']).strip(), str(i['CJ2_CHG']).strip(),str(i['PARTICIPANTID3']).strip(),str(i['PARTICIPANTABBR3']).strip(), str(i['CJ3']).strip(), str(i['CJ3_CHG']).strip()]
+            col = [TradingDay.strftime('%Y-%m-%d'), str(i['INSTRUMENTID']).strip(), ExchangeID, str(i['RANK']).strip(),'0', str(i['PARTICIPANTID1']).strip(),str(i['PARTICIPANTABBR1']).strip(), str(i['CJ1']).strip(), str(i['CJ1_CHG']).strip(),str(i['PARTICIPANTID2']).strip(),str(i['PARTICIPANTABBR2']).strip(), str(i['CJ2']).strip(), str(i['CJ2_CHG']).strip(),str(i['PARTICIPANTID3']).strip(),str(i['PARTICIPANTABBR3']).strip(), str(i['CJ3']).strip(), str(i['CJ3_CHG']).strip()]
             if int(col[3])<=20:
                 templists.append(tuple(col))
     ResultToDatabase(info,templists,insertsql)
+
+def GetCZCEPosition(info, startdate, ExchangeID):
+    top20list=map(lambda x:str(x),range(1,21,1))
+    codeList=info.GetExchangeProduct(ExchangeID)
+    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantIDABBR2]" \
+                ",[CJ2],[CJ2_CHG],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
+    header=info.GetExchangeHeader(ExchangeID)
+    url="http://www.czce.com.cn/cn/DFSStaticFiles/Future/%s/%s/FutureDataHolding.htm"%(startdate.strftime("%Y%m%d")[:4],startdate.strftime("%Y%m%d"))
+    print url
+    templists=list()
+    html=info.mysplider.getUrlcontent(url,header=header)
+    table =info.mysplider.tableTolist(html,ExchangeID)
+    for i in table:
+        if str(i[0]).strip()=="合计" or str(i[0]).strip()=="名次":
+            continue
+        temp= re.findall("[A-Za-z0-9]+",str(i[0]).strip())
+        if len(temp)==4:
+            TradeInstrument=temp[0]
+            continue
+        if len(temp)==1 and temp[0] in top20list:
+            TradingDay=startdate.strftime("%Y-%m-%d")
+            InstrumentID=TradeInstrument
+            if InstrumentID in codeList:
+                Type='1'
+            else:
+                Type='0'
+            Rank=str(i[0]).strip()
+            ParticipantABBR1=str(i[1]).strip()
+            CJ1=str(i[3]).strip()
+            CJ1_CHG=str(i[4]).strip()
+            ParticipantABBR2=str(i[5]).strip()
+            CJ2=str(i[6]).strip()
+            CJ2_CHG=str(i[7]).strip()
+            ParticipantABBR3=str(i[8]).strip()
+            CJ3=str(i[9]).strip()
+            CJ3_CHG=str(i[10]).strip()
+            col=[TradingDay, InstrumentID, ExchangeID, Rank,Type, ParticipantABBR1, CJ1, CJ1_CHG, ParticipantABBR2, CJ2, CJ2_CHG,ParticipantABBR3, CJ3, CJ3_CHG]
+            templists.append(tuple(col))
+    ResultToDatabase(info, templists, insertsql)

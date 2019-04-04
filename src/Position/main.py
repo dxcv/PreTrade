@@ -22,13 +22,17 @@ def main(startdate, mysplider,info):
     isexistsql="select distinct [ExchangeID] from [Position_Top20] where TradingDay='%s'"%startdate.strftime("%Y-%m-%d")
     templist=info.mysql.ExecQueryGetList(isexistsql)
     if not 'DCE' in templist:
-        GetDCEPosition(info,startdate,"DCE")         #大商所持仓信息
+        GetDCEPosition(info,startdate,"DCE")            #大商所持仓信息
     else:
         print "DCE数据已经存在"
     if not 'SHFE' in templist:
-        GetSHFEPosition(info, startdate, "SHFE")  # 大商所持仓信息
+        GetSHFEPosition(info, startdate, "SHFE")        # 上期所
     else:
-        print "DCE数据已经存在"
+        print "SHFE数据已经存在"
+    if not 'CZCE' in templist:
+        GetCZCEPosition(info, startdate, "CZCE")        # 郑商所
+    else:
+        print "CZCE数据已经存在"
     # GetDCEStagedTurnover(info,startdate,"DCE")      #阶段性成交
 
 
@@ -39,11 +43,11 @@ if __name__=="__main__":
     info.GetDbHistoryConnect()
     info.Get_Msplider()
 
-    t = TradingDay(info)
+    t = NextTradingDay.TradingDay(info)
     startdate = datetime.datetime.strptime("20190401", "%Y%m%d")
     # startdate =datetime.datetime.now()
 
-    enddate = datetime.datetime.now()
+    enddate = datetime.datetime.now()-datetime.timedelta(days=1)
     mysplider = info.mysplider
 
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
