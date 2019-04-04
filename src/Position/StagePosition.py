@@ -22,6 +22,7 @@ def main(startdate, mysplider,info):
     """
     GetCZCEStagedTurnover(info, startdate, "CZCE")
 
+    # GetDCEStagedTurnoverBymonth(info, startdate, "DCE")
     # GetDCEPosition(info,startdate,"DCE")            #大商所持仓信息
     #
     # GetSHFEPosition(info, startdate, "SHFE")        # 上期所
