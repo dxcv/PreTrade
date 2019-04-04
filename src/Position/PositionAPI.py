@@ -8,7 +8,6 @@ import pandas as pd
 import xlwt
 import threading
 import json
-import PositionAPI
 
 
 def ResultToDatabase(info,result,sql):

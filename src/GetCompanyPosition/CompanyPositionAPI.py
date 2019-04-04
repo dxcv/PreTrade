@@ -78,16 +78,60 @@ def GetDCEStagePosition(info):
     html=info.mysplider.getUrlcontent(info.StagePositionurl,header=header)
     listdata=info.mysplider.tableTolistByNum(html,"DCE",0)
 
-    """write to xls"""
-    ext='.csv'
-    parent = "D:/GitData/StagePosition/"
-    if not os.path.exists(parent + info.StagePositionExchangeID):
-        os.mkdir(parent + info.StagePositionExchangeID)
-    if not os.path.exists(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime):
-        os.mkdir(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime)
-    filename = info.StagePositionCode+"_"+info.StagePositionBeginTime+ ext
-    filename = parent + info.StagePositionExchangeID + "/" + info.StagePositionBeginTime+ "/" + filename
-    ListDataToExcel(listdata,filename)
+    templist = list()
+    begindate = info.StagePositionBeginTime
+    enddate = info.StagePositionEndTime
+    for i in listdata:
+        col = []
+        if str(i[0]).strip().find("名次") == -1 and str(i[0]).strip().find("共计") == -1 and str(i[0]).strip().find(
+                "总计") == -1:
+            if "null" not in i:
+                InstrumentID = info.StagePositionCode
+                Rank = str(i[0]).strip()
+                Type = '0'
+                ParticipantID1 = str(i[1]).strip()
+                ParticipantABBR1 = str(i[2]).strip()
+                CJ1 = str(i[3]).strip()
+                CJ1_Percent = str(i[4]).strip()
+                ParticipantID2 = str(i[6]).strip()
+                ParticipantABBR2 = str(i[7]).strip()
+                CJ2 = str(i[8]).strip()
+                CJ2_Percent = str(i[9]).strip()
+                col = [int(Rank), ParticipantID1, ParticipantABBR1, int(CJ1), CJ1_Percent, int(Rank),
+                       ParticipantID2, ParticipantABBR2, float(CJ2), CJ2_Percent]
+                templist.append(tuple(col))
+    columns = [u'名次', u'会员号', u'会员名称', u'成交量(手)', u'成交量比重', u'名次1', u'会员号1', u'会员名称1', u'成交金额(亿元)', u'成交额比重']
+    df = pd.DataFrame(data=templist, columns=columns)
+    saveDirector = "D:/GitData/StagePosition/" + info.StagePositionExchangeID + "/" + begindate + "/"
+    if not os.path.exists(saveDirector):
+        os.mkdir(saveDirector)
+    savafile = saveDirector + begindate + "_" + InstrumentID + ".xlsx"
+    writer = pd.ExcelWriter(savafile, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1', startrow=0, startcol=0, index=None)
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    worksheet.set_column('A:J', 15)
+
+    # Add a header format.
+    header_format = workbook.add_format({
+        'bold': True,
+        'text_wrap': True,
+        'valign': 'vcenter',
+        'border': 1
+    })
+    header_format.set_align('center')
+    header_format.set_align('vcenter')
+    writer.save()
+    # """write to xls"""
+    # ext='.csv'
+    # parent = "D:/GitData/StagePosition/"
+    # if not os.path.exists(parent + info.StagePositionExchangeID):
+    #     os.mkdir(parent + info.StagePositionExchangeID)
+    # if not os.path.exists(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime):
+    #     os.mkdir(parent + info.StagePositionExchangeID+ "/" + info.StagePositionBeginTime)
+    # filename = info.StagePositionCode+"_"+info.StagePositionBeginTime+ ext
+    # filename = parent + info.StagePositionExchangeID + "/" + info.StagePositionBeginTime+ "/" + filename
+    # ListDataToExcel(listdata,filename)
 
 
 def GetDCEStagedStatistic(info,TradingDay,ExchangeID):

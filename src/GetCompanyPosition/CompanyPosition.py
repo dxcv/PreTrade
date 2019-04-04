@@ -9,7 +9,7 @@ dir_path=os.path.dirname(os.path.abspath(".."))
 sys.path.append(dir_path)
 from utils.InfoApi import *
 from utils.Mysplider import *
-from PositionAPI import *
+from CompanyPositionAPI import *
 from utils.TradingDay import NextTradingDay
 
 
