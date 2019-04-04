@@ -276,8 +276,8 @@ class InfoApi:
         sql="select [InstrumentCode] FROM [PreTrade].[dbo].[ContractCode] where ExchangeID='%s'"%ExchangeID
         if self.HistoryDbconn is None:
             self.GetDbHistoryConnect()
-        templist=self.HistoryDbconn.ExecQuery(sql)
-        return self.Get_BasicApi().GetResultList(templist)
+        templist=self.HistoryDbconn.ExecQueryGetList(sql)
+        return templist
 
     def IsInstrumentMonth(self,Tradecode,month):
         """判断month是否为该品种的合约月份，格式:直接传入月份01/02/.../10/11/12"""
