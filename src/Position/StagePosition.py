@@ -43,7 +43,7 @@ if __name__=="__main__":
     startdate = datetime.datetime.strptime("20190401", "%Y%m%d")
     # startdate =datetime.datetime.now()
 
-    enddate = datetime.datetime.now()-datetime.timedelta(days=1)
+    enddate = datetime.datetime.now()
     mysplider = info.mysplider
 
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
