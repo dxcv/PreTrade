@@ -234,7 +234,7 @@ class InfoApi:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Safari/537.36',
             'Accept-Language': 'zh-CN,zh;q=0.9',
             'Cookie': 'BIGipServerwww_cbd=842836160.23067.0000; JSESSIONID=kYM9bphG26lQ6p25GXxyVRbkFw815nqCmJmTYxzGxxxvJnVTblhb!-1757810877; TS014ada8c=0169c5aa326a6aa66d379d396a2033d86a84f272d2b5c2f5d7b7d668355885aa62597926b41ead5b31a9f62f3252ecfb1e2c33422b',
-            'Host': 'app.czce.com.cn',
+            'Host': 'www.czce.com.cn',
             'Pragma': 'no-cache',
             'Upgrade-Insecure-Requests': '1'
         }
