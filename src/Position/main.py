@@ -16,13 +16,13 @@ from utils.TradingDay import NextTradingDay
 
 def main(startdate, mysplider,info):
     """
-    获取四大交易所期货公司持仓信息
+    获取四大交易所期货公司持仓信息top 20
     :return:
     """
     # isexistsql="select distinct [ExchangeID] from [Position_Top20] where TradingDay='%s'"%startdate.strftime("%Y-%m-%d")
 
     # if not 'DCE' in templist:
-    GetDCEPosition(info,startdate,"DCE")            #大商所持仓信息
+    #   GetDCEPosition(info,startdate,"DCE")            #大商所持仓信息
     # else:
     #     print "DCE数据已经存在"
     # if not 'SHFE' in templist:

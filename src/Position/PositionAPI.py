@@ -31,8 +31,8 @@ def GetDCEPosition(info,TradingDay,ExchangeID):
         temp=GetDCEPositionProductData(info,i,TradingDay.strftime("%Y-%m-%d"))
         result=result+temp
     eixstlist = info.mysql.ExecQueryGetList(isexistsql)
-    if not  ExchangeID in eixstlist:
-        ResultToDatabase(info,result,insertsql)
+    ResultToDatabase(info,result,insertsql)
+
 
 
 
@@ -58,8 +58,8 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
 
     """write to database"""
     for i in listdata[1:-1]:
-        col=[]
-        excelcol=[]
+        # col=[]
+        # excelcol=[]
         Rank=i[0]
         ExchangeID='DCE'
         ParticipantABBR1=i[1]
@@ -72,11 +72,11 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
         CJ3=i[10]
         CJ3_CHG=i[11]
         col=[TradingDay,InstrumentID,ExchangeID,Rank,'0',ParticipantABBR1,CJ1,CJ1_CHG,ParticipantABBR2,CJ2,CJ2_CHG,ParticipantABBR3,CJ3,CJ3_CHG]
-        excelcol=[int(Rank),ParticipantABBR1,int(CJ1),int(CJ1_CHG),int(Rank),ParticipantABBR2,int(CJ2),int(CJ2_CHG),int(Rank),ParticipantABBR3,int(CJ3),int(CJ3_CHG)]
-        exclelist.append(excelcol)
+        # excelcol=[int(Rank),ParticipantABBR1,int(CJ1),int(CJ1_CHG),int(Rank),ParticipantABBR2,int(CJ2),int(CJ2_CHG),int(Rank),ParticipantABBR3,int(CJ3),int(CJ3_CHG)]
+        # exclelist.append(excelcol)
         templists.append(tuple(col))
-    columns = [u'名次', u'会员简称', u'成交量(手)', u'增减', u'名次1',u'会员简称1', u'持买单量1', u'增减1',u'名次2', u'会员简称2', u'持卖单量2', u'增减2']
-    excelDataToExcel(exclelist,ExchangeID,columns,info.QryPositionTradingDay,info.QryPositionInstrumentID)
+    # columns = [u'名次', u'会员简称', u'成交量(手)', u'增减', u'名次1',u'会员简称1', u'持买单量1', u'增减1',u'名次2', u'会员简称2', u'持卖单量2', u'增减2']
+    # excelDataToExcel(exclelist,ExchangeID,columns,info.QryPositionTradingDay,info.QryPositionInstrumentID)
     return templists
 
 
@@ -240,6 +240,7 @@ def ListDataToExcel(listdata,filename):
 def GetSHFEPosition(info,TradingDay,ExchangeID):
     templists=[]
     url="http://www.shfe.com.cn/data/dailydata/kx/pm"+TradingDay.strftime("%Y%m%d")+".dat"
+    print url
     header={
 
     }
