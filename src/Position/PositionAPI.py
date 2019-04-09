@@ -61,6 +61,13 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
         # col=[]
         # excelcol=[]
         Rank=i[0]
+        if str(Rank).strip()=="":
+            if str(i[4]).strip() != "":
+                Rank=str(i[4]).strip()
+            if str(i[8]).strip() != "":
+                Rank = str(i[8]).strip()
+            if Rank=="":
+                continue
         ExchangeID='DCE'
         ParticipantABBR1=i[1]
         CJ1=i[2]
