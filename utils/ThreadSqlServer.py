@@ -99,6 +99,7 @@ class SqlServer:
         self.GetConnect()
         try:
             for i in list1:
+                i=tuple(i)
                 self.cur.execute(sql%i)
             self.conn.commit()
         except Exception, e:
