@@ -326,3 +326,17 @@ class InfoApi:
         tlist = self.mysql.ExecQuery(sql)
         for i in tlist:
             self.PositionTop20InstrumentID[i[0].encode("utf-8")] = i[1].encode("utf-8")
+
+    def Get2Listfromsql(self,sql):
+        """存数据库中获取数据到二维list"""
+        templist=[]
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        tlist = self.mysql.ExecQuery(sql)
+
+        for i in tlist:
+            col=[]
+            for j in i:
+                col.append(j)
+            templist.append(col)
+        return templist

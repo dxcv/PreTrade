@@ -33,7 +33,7 @@ def main(startdate, mysplider,info):
     #     GetCZCEPosition(info, startdate, "CZCE")        # 郑商所
     # else:
     #     print "CZCE数据已经存在"
-    # # GetDCEStagedTurnover(info,startdate,"DCE")      #阶段性成交
+    GetDCEStagedTurnover(info,startdate,"DCE")      #大商所月成交量成交额排名
 
 
 

@@ -89,6 +89,7 @@ def GetDCEPositionProductData(info,InstrumentID,TradingDay):
 
 def excelDataToExcel(datalist,ExchangeID,columns,TradingDay,InstrumentID):
     df = pd.DataFrame(data=datalist, columns=columns)
+    # df[[u'成交量(手)', u'增减',u'持买单量1',u'增减1',u'持卖单量2',u'增减2']] = df[[u'成交量(手)',u'增减',u'持买单量1',u'增减1',u'持卖单量2',u'增减2']].apply(pd.to_numeric)
     saveDirector = "D:/GitData/Top20Position/" + ExchangeID + "/" + TradingDay + "/"
     if not os.path.exists(saveDirector):
         os.mkdir(saveDirector)
