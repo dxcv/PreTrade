@@ -33,6 +33,8 @@ class InfoApi:
         self.cleanDatadict=list()
         self.mydate=MyDate()
 
+        self.PositionTop20InstrumentID=dict()
+
     def Get_Msplider(self):
         self.mysplider=MySplider()
         return self.mysplider
@@ -316,3 +318,11 @@ class InfoApi:
         temp={"交易所":"ExchangeID","交易代码":"InstrumentCode","最小变动价位":"PriceTick","合约乘数":"VolumeMultiple","合约月份":"InstrumentMonth","最低交易保证金":"MinMargin","最后交易日":""}
 
 
+    def GetPositionTop20InstrumentID(self):
+        """获取交易所持仓top20 合约以及对应的交易所"""
+        sql="SELECT distinct [InstrumentID],[ExchangeID] FROM [PreTrade].[dbo].[Position_Top20]"
+        if self.mysql is None:
+            self.GetDbHistoryConnect()
+        tlist = self.mysql.ExecQuery(sql)
+        for i in tlist:
+            self.PositionTop20InstrumentID[i[0].encode("utf-8")] = i[1].encode("utf-8")
