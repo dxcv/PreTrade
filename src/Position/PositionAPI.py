@@ -100,8 +100,8 @@ def excelDataToExcel(datalist,ExchangeID,columns,TradingDay,InstrumentID):
     worksheet = writer.sheets['Sheet1']
     if len(columns)==12:
         worksheet.set_column('A:L', 15)
-    elif len(columns)==14:
-        worksheet.set_column('A:N', 15)
+    elif len(columns)==15:
+        worksheet.set_column('A:O', 15)
     # Add a header format.
     header_format = workbook.add_format({
         'bold': True,
