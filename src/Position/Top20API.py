@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from PositionAPI import *
 
 def GetCFFEXPositionTop20(info, startdate, ExchangeID):
-    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantID1],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantID2],[ParticipantIDABBR2]" \
+    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantID1],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantID2],[ParticipantABBR2]" \
                 ",[CJ2],[CJ2_CHG],[ParticipantID3],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
     codeList=info.GetExchangeProduct(ExchangeID)
     url="http://www.cffex.com.cn/sj/ccpm/%s/%s/%s.xml"

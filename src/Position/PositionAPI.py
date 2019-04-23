@@ -17,7 +17,7 @@ def ResultToDatabase(info,result,sql):
 def GetDCEPosition(info,TradingDay,ExchangeID):
     result=list()
     sql="select InstrumentID from SettlementInfo where TradingDay='%s' and Position>20000 and ExchangeID='%s' and IsFuture=1"%(TradingDay.strftime("%Y-%m-%d"),ExchangeID)
-    insertsql="INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantIDABBR2]" \
+    insertsql="INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantABBR2]" \
               ",[CJ2],[CJ2_CHG],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
     isexistsql = "select distinct [ExchangeID] from [Position_Top20] where TradingDay='%s'" % TradingDay.strftime(
         "%Y-%m-%d")
@@ -252,7 +252,7 @@ def GetSHFEPosition(info,TradingDay,ExchangeID):
     header={
 
     }
-    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantID1],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantID2],[ParticipantIDABBR2]" \
+    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantID1],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantID2],[ParticipantABBR2]" \
                 ",[CJ2],[CJ2_CHG],[ParticipantID3],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
     html=info.mysplider.getUrlcontent(url,header=header)
     data=json.loads(html)
@@ -268,7 +268,7 @@ def GetSHFEPosition(info,TradingDay,ExchangeID):
 def GetCZCEPosition(info, startdate, ExchangeID):
     top20list=map(lambda x:str(x),range(1,21,1))
     codeList=info.GetExchangeProduct(ExchangeID)
-    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantIDABBR2]" \
+    insertsql = "INSERT INTO [dbo].[Position_Top20] ([TradingDay],[InstrumentID],[ExchangeID],[Rank],[Type],[ParticipantABBR1],[CJ1],[CJ1_CHG],[ParticipantABBR2]" \
                 ",[CJ2],[CJ2_CHG],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
     header=info.GetExchangeHeader(ExchangeID)
     url="http://www.czce.com.cn/cn/DFSStaticFiles/Future/%s/%s/FutureDataHolding.htm"%(startdate.strftime("%Y%m%d")[:4],startdate.strftime("%Y%m%d"))
