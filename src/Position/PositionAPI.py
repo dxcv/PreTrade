@@ -8,6 +8,7 @@ import pandas as pd
 import xlwt
 import threading
 import json
+import zipfile
 
 
 def ResultToDatabase(info,result,sql):
@@ -303,3 +304,20 @@ def GetCZCEPosition(info, startdate, ExchangeID):
             col=[TradingDay, InstrumentID, ExchangeID, Rank,Type, ParticipantABBR1, CJ1, CJ1_CHG, ParticipantABBR2, CJ2, CJ2_CHG,ParticipantABBR3, CJ3, CJ3_CHG]
             templists.append(tuple(col))
     ResultToDatabase(info, templists, insertsql)
+
+
+def zipDir(dirpath,outFullName):
+    """
+    压缩指定文件夹
+    :param dirpath: 目标文件夹路径
+    :param outFullName: 压缩文件保存路径+xxxx.zip
+    :return: 无
+    """
+    zip = zipfile.ZipFile(outFullName,"w",zipfile.ZIP_DEFLATED)
+    for path,dirnames,filenames in os.walk(dirpath):
+        # 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
+        fpath = path.replace(dirpath,'')
+
+        for filename in filenames:
+            zip.write(os.path.join(path,filename),os.path.join(fpath,filename))
+    zip.close()
