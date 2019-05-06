@@ -47,9 +47,9 @@ if __name__=="__main__":
             col= [startdate.strftime("%Y-%m-%d").strip(),1,t.IsEveningOpen(tempstartday)]
         else:
             col=[startdate.strftime("%Y-%m-%d"),0,0]
-        preday=t.NextTradingDay(tempstartday,False)
+        preday=t.NextTradingDayFuture(tempstartday,False)
         preday=datetime.datetime.strptime(preday,"%Y%m%d").strftime("%Y-%m-%d")
-        nextday=t.NextTradingDay(tempstartday, True)
+        nextday=t.NextTradingDayFuture(tempstartday, True)
         nextday=datetime.datetime.strptime(nextday,"%Y%m%d").strftime("%Y-%m-%d")
         col.append(preday)
         col.append(nextday)
