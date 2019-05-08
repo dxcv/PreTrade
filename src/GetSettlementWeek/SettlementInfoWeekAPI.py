@@ -60,8 +60,8 @@ def GetCFFEXFutureWeekInfo(TradingDay, info):
     }
     sql = """
            INSERT INTO [PreTrade].[dbo].[SettlementInfoWeek]
-           ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[CSPriceChange],[Volume],[Position],[PositionChange],[Turnover])
-             VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s')
+           ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[Volume],[Position],[PositionChange],[Turnover])
+             VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s')
            """
     html = info.mysplider.getUrlcontent(url, header)
     bs = BeautifulSoup(html, "xml")
@@ -80,6 +80,7 @@ def GetCFFEXFutureWeekInfo(TradingDay, info):
             temp[5] = temp[8]
             temp[6] = temp[8]
             temp[2] = temp[8]
+        del temp[9]
         sqllist.append(tuple(temp))
     info.mysplider.dataToSqlserver(sqllist, sql,info)
 
@@ -101,8 +102,8 @@ def GetSHFEOptionWeekInfo(TradingDay, info):
     }
     sql = """
         INSERT INTO [PreTrade].[dbo].[SettlementInfoWeek]
-        ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[CSPriceChange],[Volume],[Position],[PositionChange],[Turnover])
-          VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s')
+        ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[Volume],[Position],[PositionChange],[Turnover])
+          VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s')
         """
     # tradingday = TradingDay.strftime("%Y-%m-%d")
     html = info.mysplider.getUrlcontent(url, header)
@@ -123,6 +124,7 @@ def GetSHFEOptionWeekInfo(TradingDay, info):
                 temp[5] = temp[8]
                 temp[6] = temp[8]
                 temp[7] = temp[8]
+            del temp[9]
             sqllist.append(tuple(temp))
     info.mysplider.dataToSqlserver(sqllist, sql,info)
 
@@ -142,8 +144,8 @@ def  GetSHFEFutureWeekInfo(TradingDay,info):
     }
     sql = """
               INSERT INTO [PreTrade].[dbo].[SettlementInfoWeek]
-                          ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[CSPriceChange],[Volume],[Position],[PositionChange],[Turnover])
-                       VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s')
+                          ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[Volume],[Position],[PositionChange],[Turnover])
+                       VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s')
             """
     tradingday = TradingDay.strftime("%Y-%m-%d")
     html = info.mysplider.getUrlcontent(url, header)
@@ -161,6 +163,7 @@ def  GetSHFEFutureWeekInfo(TradingDay,info):
                 temp[5] = temp[8]
                 temp[6] = temp[8]
                 temp[7] = temp[8]
+            del temp[9]
             sqllist.append(tuple(temp))
     info.mysplider.dataToSqlserver(sqllist, sql,info)
 
@@ -179,8 +182,8 @@ def GetCZCEOptionWeekInfo(TradingDay, info):
     }
     sql = """
             INSERT INTO [PreTrade].[dbo].[SettlementInfoWeek]
-                       ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[CSPriceChange],[Volume],[Position],[PositionChange],[Turnover])
-                    VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s')
+                       ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[Volume],[Position],[PositionChange],[Turnover])
+                    VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s')
             """
     html = info.mysplider.getUrlcontent(url, header)
     datalist =info.mysplider.tableTolist(html, "CZCE")
@@ -200,6 +203,7 @@ def GetCZCEOptionWeekInfo(TradingDay, info):
                 temp[6]=temp[8]
                 temp[7]=temp[8]
                 temp[8]=temp[8]
+            del temp[9]
             sqllist.append(tuple(temp))
     info.mysplider.dataToSqlserver(sqllist, sql,info)
 
@@ -219,8 +223,8 @@ def GetCZCEFutureWeekInfo(TradingDay,info):
     }
     sql = """
         INSERT INTO [PreTrade].[dbo].[SettlementInfoWeek]
-                   ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[CSPriceChange],[Position],[PositionChange],[SettlementPrice],[Volume],[Turnover])
-                VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s')
+                   ([TradingDay],[InstrumentID],[OpenPrice],[ExchangeID],[IsFuture],[HighestPrice],[LowestPrice],[ClosePrice],[Position],[PositionChange],[SettlementPrice],[Volume],[Turnover])
+                VALUES('%s','%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s')
         """
     html = info.mysplider.getUrlcontent(url, header)
     datalist = info.mysplider.tableTolist(html, "CZCE")
@@ -237,6 +241,7 @@ def GetCZCEFutureWeekInfo(TradingDay,info):
                 temp[6]=temp[11]
                 temp[7]=temp[11]
                 temp[2]=temp[11]
+            del temp[8]
             sqllist.append(tuple(temp))
 
     info.mysplider.dataToSqlserver(sqllist, sql,info)
@@ -258,9 +263,9 @@ def GetDCEOptionWeekInfo(TradingDay, info):
         'Upgrade-Insecure-Requests': '1'
     }
     optsql = """
-        INSERT INTO [dbo].[SettlementInfoWeek]([TradingDay],[InstrumentID],[ExchangeID],[IsFuture],[OpenPrice],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[CSPriceChange],
+        INSERT INTO [dbo].[SettlementInfoWeek]([TradingDay],[InstrumentID],[ExchangeID],[IsFuture],[OpenPrice],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],
         [Volume],[Position],[PositionChange],[Turnover])
-         VALUES('%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')
+         VALUES('%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s')
     """
 
     Optionurl = url % ( TradingDay.year, TradingDay.month - 1, TradingDay.day)
@@ -279,6 +284,7 @@ def GetDCEOptionWeekInfo(TradingDay, info):
             temp[4]=temp[7]
             temp[5] = temp[7]
             temp[6] = temp[7]
+        del temp[9]
         sqlist.append(tuple(temp))
     info.mysplider.dataToSqlserver(sqlist, optsql,info)
 
@@ -302,8 +308,8 @@ def GetDCEFutureWeekInfo(TradingDay, info):
 
     sql = """
     INSERT INTO [PreTrade].[dbo].[SettlementInfoWeek]
-               ([InstrumentID],[TradingDay],[ExchangeID],[IsFuture],[OpenPrice],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[CSPriceChange],[Volume],[Position],[PositionChange],[Turnover])
-            VALUES('%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')
+               ([InstrumentID],[TradingDay],[ExchangeID],[IsFuture],[OpenPrice],[HighestPrice],[LowestPrice],[ClosePrice],[SettlementPrice],[Volume],[Position],[PositionChange],[Turnover])
+            VALUES('%s','%s','%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s')
     """
 
     Futureurl = url % (TradingDay.year, TradingDay.month - 1, TradingDay.day)
@@ -349,6 +355,7 @@ def dataclean(info,datalist,tradingday):
                 i[4]=i[7]
                 i[5]=i[7]
                 i[6]=i[7]
+            del i[9]
             sqllist.append(tuple(i))
     f.close()
     return sqllist
