@@ -113,8 +113,8 @@ def GetSHFEOptionWeekInfo(TradingDay, info):
     sqllist = []
     for i in contentdata:
         temp = []
-        if str(i['PRODUCTNAME'].encode("utf-8")).strip().find("计") == -1 and str(i['SETTLEMENTPRICE']).strip() != "":
-            InstrumentID = str(i['INSTRUMENTID']).strip()
+        if str(i['INSTRUMENTID'].encode("utf-8")).strip().find("计") == -1:
+            InstrumentID = str(i['INSTRUMENTID'].encode("utf-8")).strip()
             temp = [info.TradingDay, InstrumentID, i['OPENPRICE'], 'SHFE', 0, i['HIGHESTPRICE'], i['LOWESTPRICE'],
                     i['CLOSEPRICE'], i['SETTLEMENTPRICE'], i['ZD1_CHG'], i['VOLUME'], i['OPENINTEREST'],
                     i['OPENINTERESTCHG'], i['TURNOVER']]
@@ -152,17 +152,16 @@ def  GetSHFEFutureWeekInfo(TradingDay,info):
     sqllist = []
     for i in contentdata:
         temp = []
-        # if str(i['PRODUCTNAME'].encode("utf-8")).strip().find("计")==-1 and str(i['SETTLEMENTPRICE']).strip()!="":
-        #     InstrumentID = str(i['PRODUCTID']).strip().replace("_f", "") + str(i['DELIVERYMONTH']).strip()
-        InstrumentID=i['INSTRUMENTID']
-        temp=[info.TradingDay,InstrumentID,i['OPENPRICE'],'SHFE',1, i['HIGHESTPRICE'], i['LOWESTPRICE'],
-             i['CLOSEPRICE'], i['SETTLEMENTPRICE'], i['PRICECHG'],i['VOLUME'], i['OPENINTEREST'],i['OPENINTERESTCHG'],i['TURNOVER']]
-        if temp[8] != "" and temp[4] == "" and temp[5] == "" and temp[6] == "" and temp[2]=="":
-            temp[2] = temp[8]
-            temp[5] = temp[8]
-            temp[6] = temp[8]
-            temp[7] = temp[8]
-        sqllist.append(tuple(temp))
+        if str(i['INSTRUMENTID'].encode("utf-8")).strip().find("计")==-1 :
+            InstrumentID=str(i['INSTRUMENTID'].encode("utf-8")).strip()
+            temp=[info.TradingDay,InstrumentID,i['OPENPRICE'],'SHFE',1, i['HIGHESTPRICE'], i['LOWESTPRICE'],
+                 i['CLOSEPRICE'], i['SETTLEMENTPRICE'], i['PRICECHG'],i['VOLUME'], i['OPENINTEREST'],i['OPENINTERESTCHG'],i['TURNOVER']]
+            if temp[8] != "" and temp[4] == "" and temp[5] == "" and temp[6] == "" and temp[2]=="":
+                temp[2] = temp[8]
+                temp[5] = temp[8]
+                temp[6] = temp[8]
+                temp[7] = temp[8]
+            sqllist.append(tuple(temp))
     info.mysplider.dataToSqlserver(sqllist, sql,info)
 
 """"------------------------------------郑商所------------------------------------------------------------------------------------------"""
