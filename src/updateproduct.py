@@ -105,7 +105,7 @@ def GetCFFEXProduct(mysplider, info, ExchangeID):
 
 if __name__=='__main__':
     print """你确定要执行此脚本？执行完成后还要修改相应交易时间"""
-    raise Exception
+    # raise Exception
     Instrument={}
     temp={}
     info=InfoApi()
@@ -122,10 +122,10 @@ if __name__=='__main__':
         url=info.GetExchangeWebsite(i)
         if i =='CZCE':
             GetCZCEProduct(mysplider,info,i)
-        elif i=='DCE':
-            GetDCEProduct(mysplider, info, i)
-        elif i=='SHFE':
-            GetSHFEProduct(mysplider, info, i)
-        elif i=='CFFEX':
-            pass
-            GetCFFEXProduct(mysplider, info, i)
+        # elif i=='DCE':
+        #     GetDCEProduct(mysplider, info, i)
+        # elif i=='SHFE':
+        #     GetSHFEProduct(mysplider, info, i)
+        # elif i=='CFFEX':
+        #     pass
+        #     GetCFFEXProduct(mysplider, info, i)
