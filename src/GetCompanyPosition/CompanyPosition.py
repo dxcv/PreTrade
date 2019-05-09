@@ -16,7 +16,7 @@ from utils.TradingDay import NextTradingDay
 
 def main(startdate, mysplider,info):
     """
-    获取四大交易所期货公司持仓信息
+    获取四大交易所期货公司持仓信息top20
     :return:
     """
 
@@ -34,7 +34,7 @@ if __name__=="__main__":
 
     t = TradingDay(info)
     startdate = datetime.datetime.strptime("20190308", "%Y%m%d")
-    startdate =datetime.datetime.now()
+    # startdate =datetime.datetime.now()
 
     enddate = datetime.datetime.now()
     mysplider = info.mysplider

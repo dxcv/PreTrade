@@ -16,7 +16,7 @@ from utils.TradingDay import *
 
 def main(startdate,info):
     """
-    获取四大交易所期货公司持仓信息
+    获取大商所阶段性成交，只能查询一个月的
     :return:
     """
 

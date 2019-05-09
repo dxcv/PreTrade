@@ -19,13 +19,13 @@ def main(startdate, mysplider):
     获取四大交易所的日统计信息
     :return:
     # """
-    GetContractInfo(startdate, info, "DCE")  # 获取大商所合约信息
+    # GetContractInfo(startdate, info, "DCE")  # 获取大商所合约信息
 
     GetCZCEContractInfo(startdate,info)        #获取郑商所合约信息
 
-    GetContractInfo(startdate, info, "SHFE")  # 获取上期所合约信息
-
-    GetContractInfo(startdate, info, "CFFEX")  # 中金所合约信息
+    # GetContractInfo(startdate, info, "SHFE")  # 获取上期所合约信息
+    #
+    # GetContractInfo(startdate, info, "CFFEX")  # 中金所合约信息
 
 
 
