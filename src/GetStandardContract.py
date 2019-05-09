@@ -268,16 +268,16 @@ class ProductDetail:
         html = self.mysplider.getUrlcontent(self.Url, self.DCEHeader)
         table = self.mysplider.tableTolistP(html, self.ExchangeID)
         if self.name=="玉米":
-            VolumeMultiple = re.findall(r'\d+', table[2][1])[0]
-            LimitUpDown = float(re.findall(r'([0-9.]+)[ ]*', table[5][1])[0]) / 100
-            PriceTick = re.findall(r'([0-9.]+)[ ]*', table[4][1])[0]
-            InstrumentCode = BasicAPI().GetExchangeProductCode(table[14][1], self.ExchangeID)
-            MinMargin = float(re.findall(r'([0-9.]+)[ ]*', table[12][1])[0]) / 100
-            DelivMethod = self.DeliveryMethod[table[13][1]]
+            VolumeMultiple = re.findall(r'\d+', table[1][1])[0]
+            LimitUpDown = float(re.findall(r'([0-9.]+)[ ]*', table[4][1])[0]) / 100
+            PriceTick = re.findall(r'([0-9.]+)[ ]*', table[3][1])[0]
+            InstrumentCode = BasicAPI().GetExchangeProductCode(table[13][1], self.ExchangeID)
+            MinMargin = float(re.findall(r'([0-9.]+)[ ]*', table[11][1])[0]) / 100
+            DelivMethod = self.DeliveryMethod[table[12][1]]
             EndDate = (re.findall(ur'[一二三四五六七八九十]+|[0-9]+', table[8][1].decode("utf-8"))[0]).encode("utf-8")
-            tempEndDate=table[8][1]
-            tempEndDelivDate=table[9][1]
-            Delivemonth=table[6][1]
+            tempEndDate=table[7][1]
+            tempEndDelivDate=table[8][1]
+            Delivemonth=table[5][1]
         else:
             VolumeMultiple = re.findall(r'\d+', table[1][1])[0]
             LimitUpDown = float(re.findall(r'([0-9.]+)[ ]*', table[4][1])[0]) / 100
@@ -298,7 +298,18 @@ class ProductDetail:
     def _ProductDetail__GetCZCEProductDetail(self):
         html=self.mysplider.getUrlcontent(self.Url,self.CZCEHeader)
         table=self.mysplider.tableTolist(html,"CZCE")
-        if self.name == "甲醇":
+        if self.name in ['红枣']:
+            VolumeMultiple = re.findall(r'\d+', table[1][1])[0]
+            LimitUpDown = float(re.findall(r'([0-9.]+)[ ]*', table[4][1])[0]) / 100
+            PriceTick = re.findall(r'([0-9.]+)[ ]*', table[3][1])[0]
+            InstrumentCode = BasicAPI().GetExchangeProductCode(table[13][1], self.ExchangeID)
+            MinMargin = float(re.findall(r'([0-9.]+)[ ]*', table[5][1])[0]) / 100
+            DelivMethod = self.DeliveryMethod[table[12][1]]
+            # ur'([一二三四五六七八九零十百千万亿]+|[0-9]+[,]*[0-9]+.[0-9]+)'
+            tempEndDate = table[8][1]
+            tempEndDelivDate = table[9][1]
+            Delivemonth = table[6][1]
+        elif self.name in ['甲醇']:
             VolumeMultiple = re.findall(r'\d+', table[3][1])[0]
             LimitUpDown = float(re.findall(r'([0-9.]+)[ ]*',table[6][1] )[0]) / 100
             PriceTick =re.findall(r'([0-9.]+)[ ]*',table[5][1])[0]
