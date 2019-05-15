@@ -56,9 +56,10 @@ if __name__ == '__main__':
     t = TradingDay(info)
     productlist=[]              #成交量持仓量的品种代码
 
-    startdate='20190514'
+    startdate='20190515'
     startdate=datetime.datetime.strptime(startdate,"%Y%m%d")
     enddate=datetime.datetime.now()
+    startdate=enddate
     while startdate<=enddate:
         print info.mysql
         Prestartdate=t.NextTradingDayFuture(startdate.strftime("%Y%m%d"),False)
