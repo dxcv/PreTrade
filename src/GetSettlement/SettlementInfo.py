@@ -51,8 +51,10 @@ if __name__=="__main__":
     info.Get_Msplider()
 
     t = TradingDay(info)
-    startdate = datetime.datetime.strptime("20190301", "%Y%m%d")
+    # startdate = datetime.datetime.strptime("20190301", "%Y%m%d")
+    startdate = datetime.datetime.now() - datetime.timedelta(days=7)
     enddate = datetime.datetime.now()
+    startdate=enddate
     mysplider = info.mysplider
 
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
