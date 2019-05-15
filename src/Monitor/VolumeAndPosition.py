@@ -9,6 +9,7 @@ from utils.TradingDay.NextTradingDay import *
 from utils.InfoApi import  *
 import pandas as pd
 import xlwt
+SaveDirector=u"D:/GitData/pignemo/PreTrade/铁矿石成交量监控/"
 columns=[u'交易日',u'合约代码',u'成交量',u'上一交易日成交量',u'成交量同比增长(%)',u'持仓量',u'上一交易日持仓量',u'持仓量同比增长(%)']
 
 def dealResult(result):
@@ -30,7 +31,7 @@ def GetVolumeAndPosition(info):
     result=info.mysql.ExecQuery(sql)
     temp=dealResult(result)
     temp=pd.DataFrame(data=temp,columns=columns,index=None)
-    excelfilename = "./data/" + info.TradingDay.replace("-","") + u'铁矿石成交量监控.xlsx'
+    excelfilename = SaveDirector + info.TradingDay.replace("-","") + u'铁矿石成交量监控.xlsx'
     writer =  pd.ExcelWriter(excelfilename, engine='xlsxwriter')
     temp.to_excel(writer, sheet_name='Sheet1', startrow=0, startcol=0, index=None)
     workbook = writer.book

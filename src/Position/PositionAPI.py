@@ -329,3 +329,15 @@ def zipDir(startdir,outFullName):
     #     for filename in filenames:
     #         z.write(os.path.join(dirpath, filename))
     # z.close()
+
+
+def copy(sourPath,distPath):                       #sourPath原文件地址，distPath指定地址
+
+    fp = open(sourPath,'r')
+    fp1 = open(distPath,'w')
+    for i in fp:
+        fp1.write(i)                        #向新文件中写入数据
+
+    fp.close()
+
+    fp1.close()

@@ -2,11 +2,14 @@
 # @Time    : 2019/4/9 17:55
 # @Author  : ZouJunLin
 """top 20持仓从数据库写入到excel表格"""
-import datetime
+import datetime,os,sys
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
 from utils.InfoApi import *
 from utils.TradingDay import NextTradingDay
 from PositionAPI import *
 saveDirector = "D:/GitData/Top20Position/"
+zipSaveDirector=u"D:/GitData/pignemo/PreTrade/日持仓前20期货公司数据/"
 ExchangeList=['CZCE','DCE','SHFE','CFFEX']
 last_day=""
 
@@ -31,11 +34,12 @@ if __name__=="__main__":
     info.GetPositionTop20InstrumentID()
 
     t = NextTradingDay.TradingDay(info)
-    startdate = datetime.datetime.strptime("20190411", "%Y%m%d")
+    startdate = datetime.datetime.strptime("20190429", "%Y%m%d")
 
 
     enddate = datetime.datetime.now()
     mysplider = info.mysplider
+    startdate=enddate
 
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
         print startdate,
@@ -46,7 +50,7 @@ if __name__=="__main__":
         # saveDirector = "D:/GitData/Top20Position/" + ExchangeID + "/" + TradingDay + "/"
         for i in ExchangeList:
             filepath=saveDirector+i + "/" + last_day + "/"
-            zipDir(filepath,saveDirector+i + "/" +last_day+".zip")
+            zipDir(filepath,zipSaveDirector+i + "/" +last_day+".zip")
 
     info.mysql.Disconnect()
 

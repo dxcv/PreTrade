@@ -10,10 +10,12 @@ def GetCFFEXPositionTop20(info, startdate, ExchangeID):
                 ",[CJ2],[CJ2_CHG],[ParticipantID3],[ParticipantABBR3],[CJ3],[CJ3_CHG]) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"
     codeList=info.GetExchangeProduct(ExchangeID)
     url="http://www.cffex.com.cn/sj/ccpm/%s/%s/%s.xml"
+
     tempdata=list()
     Tradingday=startdate.strftime("%Y%m%d")
     for code in codeList:
         Url=url%(Tradingday[:6],Tradingday[6:8],code)
+        print Url
         temp=GetCFFEXListTop20(info,startdate.strftime("%Y-%m-%d"),ExchangeID,Url)
         tempdata=tempdata+temp
     info.mysql.ExecmanysNonQuery(insertsql, tempdata)
@@ -26,13 +28,22 @@ def GetCFFEXListTop20(info,Tradingday,ExchangeID,url):
     bs = BeautifulSoup(html, "xml")
     content = bs.findAll("data")
     for i in content:
-        InstrumentID = str(i.find("instrumentid").text).strip()
+        try:
+            InstrumentID = str(i.find("instrumentid").text).strip()
+        except:
+            InstrumentID = str(i.find("instrumentId").text).strip()
         Rank=str(i.find("rank").text).strip()
-        datatypeid=str(i.find("datatypeid").text).strip()
+        try:
+            datatypeid=str(i.find("datatypeid").text).strip()
+        except:
+            datatypeid = str(i.find("dataTypeId").text).strip()
         partyid=str(i.find("partyid").text).strip()
         shortname=str(i.find("shortname").text).strip()
         volume=str(i.find("volume").text).strip()
-        varvolume=str(i.find("varvolume").text).strip()
+        try:
+            varvolume=str(i.find("varvolume").text).strip()
+        except:
+            varvolume = str(i.find("varVolume").text).strip()
         if not  InstrumentID in tempdata.keys():
             tempdata[InstrumentID]=dict()
         if not  Rank in tempdata[InstrumentID].keys():
