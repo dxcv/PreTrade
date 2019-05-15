@@ -2,7 +2,9 @@
 # @Time    : 2019/5/13 13:34
 # @Author  : ZouJunLin
 """主要用来铁矿石的成交量持仓量的监控函数。同比上一交易日的成交量，持仓量数据"""
-import datetime
+import datetime,os,sys
+dir_path=os.path.dirname(os.path.abspath(".."))
+sys.path.append(dir_path)
 from utils.TradingDay.NextTradingDay import *
 from utils.InfoApi import  *
 import pandas as pd
@@ -54,7 +56,7 @@ if __name__ == '__main__':
     t = TradingDay(info)
     productlist=[]              #成交量持仓量的品种代码
 
-    startdate='20190422'
+    startdate='20190514'
     startdate=datetime.datetime.strptime(startdate,"%Y%m%d")
     enddate=datetime.datetime.now()
     while startdate<=enddate:
