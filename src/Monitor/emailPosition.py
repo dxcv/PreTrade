@@ -66,7 +66,7 @@ if __name__ == '__main__':
             """3、根据2中返回的字典拼接邮件发送的内容，附件以当天持仓量监控的内容"""
             sender = "zjl@jingyoutech.com"
             password = "Aa85258584"
-            receiver = ["1927007992@qq.com","3071852096@qq.com"]
+            receiver = ["zhuhaiqiang@jingyoutech.com","1927007992@qq.com","jt@jingyoutech.com"]
             receiverPwd = "lvadbzsqpjxpdjhf"
             subject = u"镍持仓量监控"
             doc=Directory+startdate.strftime("%Y%m%d")+u"镍持仓量监控.xlsx"
