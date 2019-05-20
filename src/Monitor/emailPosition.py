@@ -66,16 +66,21 @@ if __name__ == '__main__':
             """3、根据2中返回的字典拼接邮件发送的内容，附件以当天持仓量监控的内容"""
             sender = "zjl@jingyoutech.com"
             password = "Aa85258584"
-            receiver = ["1927007992@qq.com", ]
+            receiver = ["1927007992@qq.com","3071852096@qq.com"]
             receiverPwd = "lvadbzsqpjxpdjhf"
             subject = u"镍持仓量监控"
             doc=Directory+startdate.strftime("%Y%m%d")+u"镍持仓量监控.xlsx"
             myemail = MyEmail(sender, password=password, receiver=receiver, subject=subject, Type="qiye", doc=doc)
             myemail.Login()
             content=""
+            print value
             for k,v in value.items():
-                tempcontent = u"%s合约连续%s天持仓超过15万张,\n"%(k,v)
+                if v==1:
+                    tempcontent = u"%s合约首次持仓超过15万张,\n" % (k)
+                else:
+                    tempcontent = u"%s合约连续%s天持仓超过15万张,\n"%(k,v)
                 content=content+tempcontent
-            content=content+u"当天持仓成交数据请见附件,历史持仓数据见github镍持仓量监控文件夹(邮件自动监控脚本发送，如有bug，请及时提出)。"
+            content=content+u"镍当天持仓成交数据请见附件,历史持仓数据见github镍持仓量监控文件夹(邮件自动监控脚本发送，如有bug，请及时提出)。"
+            print content
             myemail.SetSendContent(content)
             myemail.Send()
