@@ -71,7 +71,8 @@ if __name__=="__main__":
     info.Get_Msplider()
 
     t = NextTradingDay.TradingDay(info)
-    startdate = datetime.datetime.strptime("20180102", "%Y%m%d")
+    startdate = datetime.datetime.now() - datetime.timedelta(days=7)
+    startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), False)
 
 
     enddate = datetime.datetime.now()

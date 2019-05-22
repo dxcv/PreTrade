@@ -166,7 +166,8 @@ if __name__=="__main__":
     infoapi=InfoApi()
     infoapi.Get_Msplider()
     t = TradingDay(infoapi)
-    startdate = datetime.datetime.now()-datetime.timedelta(days=7)
+    startdate = datetime.datetime.now() - datetime.timedelta(days=7)
+    startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), False)
     enddate = datetime.datetime.now()
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
         print startdate

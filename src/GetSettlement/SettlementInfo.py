@@ -53,6 +53,7 @@ if __name__=="__main__":
     t = TradingDay(info)
     # startdate = datetime.datetime.strptime("20190301", "%Y%m%d")
     startdate = datetime.datetime.now() - datetime.timedelta(days=7)
+    startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), False)
     enddate = datetime.datetime.now()
     startdate=enddate
     mysplider = info.mysplider
