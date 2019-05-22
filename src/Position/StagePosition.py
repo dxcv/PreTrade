@@ -73,6 +73,7 @@ if __name__=="__main__":
     t = NextTradingDay.TradingDay(info)
     startdate = datetime.datetime.now() - datetime.timedelta(days=7)
     startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), False)
+    startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
 
 
     enddate = datetime.datetime.now()
