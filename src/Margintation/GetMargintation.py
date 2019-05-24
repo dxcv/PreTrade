@@ -21,16 +21,15 @@ import json
 YhqhUrl="https://www.yhqh.com.cn/list-431-1.html"
 SywgUrl="http://www.sywgqh.com.cn/Pc/Common?page=1&rows=10&topicCode=Cover_Cost"
 zhongxinUrl="https://www.citicsf.com/e-futures/csc/000205/article/list"
-bohaiUrl="http://www.bhfcc.com/customer-center-tool_cid_47.html"
 # donghangUrl="https://www.cesfutures.com/page/gsgg/#/index/jyfl/bzj"
 donghangUrl="https://www.cesfutures.com/RESTfull/pz/bzj/list.json"
 
 def main(info):
-    # templist=GetSywg(info)
-    # templist=GetYhqh(info)
+    templist=GetSywg(info)
+    templist = GetDonghang(info)
+    templist=GetYhqh(info)
     # templist=GetZhongxin(info)
-    # templist=GetBohai(info,'2')
-    templist=GetDonghang(info)
+
     # info.mysql.Disconnect()
 
 
@@ -74,54 +73,6 @@ def GetDonghang(info):
         col = [date.strftime("%Y-%m-%d"), i, ExchangeId, margintation]
         templist.append(col)
     info.mysql.UpdateMarginExample(templist, Type)
-
-def GetBohai(info,Type):
-    tempdict=dict()
-    header = {
-        'Accept': 'text/html, application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        'Cache-Control': 'no-cache',
-        'Content-Language': 'zh - CN',
-        'Cookie': 'CITICSFID=5e234530-a085-4b66-93cf-0802b2fdd97a; CITICF_SESSION_EFUTURRES=C1ED2755FB3344115793DA52A14BC2AA; __jsluid=3a1e4391da46135c95e69a023c26201b; Hm_cv_eb9b2943105704fc985fd700527c1a9e=*!1*userType*%E6%B8%B8%E5%AE%A2; Hm_lvt_eb9b2943105704fc985fd700527c1a9e=1548990403,1548990557,1549002085; Hm_lpvt_eb9b2943105704fc985fd700527c1a9e=1549003175',
-        'Host': 'www.bhfcc.com',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Referer': 'http://www.bhfcc.com/customer-center-treaty_cid_49.html',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36',
-        'Pragma': 'no - cache',
-    }
-    if datetime.datetime.now().strftime("%H%M%S")<"180000":
-        date=datetime.datetime.now()
-    else:
-        date=(datetime.datetime.now()+datetime.timedelta(days=1))
-    html = info.mysplider.getUrlcontent(bohaiUrl, header=header)
-    bs = BeautifulSoup(html, "html.parser")
-    divdata = bs.find("table")
-    divdata=divdata.findAll("tr")[1:]
-    for i in divdata[:-1]:
-        td=i.findAll("td")
-        try:
-            product=td[-2].get_text()
-            # product=re.findall(r'[(|（](.*?)[)|）]',product)[0]
-            product = re.findall(r'[a-zA-Z]+', product)[0]
-            margintation=float(str(td[-1].get_text()).strip().replace("%",""))/100
-            tempdict[product]=margintation
-        except:
-            pass
-    # for i in tempdict:
-    #     print i,tempdict[i]
-
-    FutureInstrumentList=info.GetAllTradeInstrumentByTradingDay(date.strftime("%Y%m%d"))
-    print len(FutureInstrumentList)
-    templist=list()
-    for i in FutureInstrumentList.keys():
-        ExchangeId = FutureInstrumentList[i]
-        code, num = info.GetDetailByInstrumentID(i, ExchangeId)
-        margintation=tempdict[code]
-        col = [date.strftime("%Y-%m-%d"), i, ExchangeId, margintation]
-        templist.append(col)
-    info.mysql.UpdateMarginExample(templist, Type)
-
-
 
 
 def  GetZhongxin(info):
@@ -215,7 +166,8 @@ def GetYhqhContent(info,date,url):
     header={}
     html = info.mysplider.getUrlcontent(url, header=header)
     table=info.mysplider.tableTolist(html,"")
-    templist=[]
+    templist=dict()
+    datalist=[]
     for i in table[1:-2]:
         try:
             a=float("".join(re.findall(r'[1-9.]', str(i[0]).strip())))
@@ -227,18 +179,25 @@ def GetYhqhContent(info,date,url):
                     else:
                         tempname=j
                     # print tempname
-                    tempcode=info.GetCodeByName(tempname)
+
                     if str(tempname).strip().find("(") != -1:
                         print "---------------------", tempname
+                        tempname,month=tempname.split("(")
+                        month=month.replace(")","").strip()
+                        tempcode = info.GetCodeByName(tempname)
+                        InstrumentID =info.GetInstrumentIDByCodeAndDate(tempcode[1],tempcode[0],month)
                         if not "specialInstrumentId" in info.tempdata.keys():
                             info.tempdata['specialInstrumentId'] = dict()
-                        info.tempdata['specialInstrumentId'].append(tempname)
+                        info.tempdata['specialInstrumentId'][InstrumentID] = float(i[0]) / 100
                     elif str(tempname).strip().find("（") != -1:
                         print "---------------------", tempname
-                        str(tempname).strip().replace("（","(").replace("）",")")
+                        tempname,month=tempname.split('（')
+                        month = month.replace("）", "").strip()
+                        tempcode = info.GetCodeByName(tempname)
+                        InstrumentID = info.GetInstrumentIDByCodeAndDate(tempcode[1], tempcode[0], month)
                         if not "specialInstrumentId" in info.tempdata.keys():
                             info.tempdata['specialInstrumentId'] = dict()
-                        info.tempdata['specialInstrumentId'].append(tempname)
+                        info.tempdata['specialInstrumentId'][InstrumentID]= float(i[0]) / 100
                         # print "---------------------", tempname
                         # specialMonth = re.findall(r'\d+', str(i[1]).strip())[0].encode("utf-8")
                         # specialInstrument =GetInstrumentIdByCodeDate(tempcode[0],tempcode[1],specialMonth)
@@ -247,13 +206,31 @@ def GetYhqhContent(info,date,url):
                         # if not specialInstrument in info.tempdata['specialInstrumentId']:
                         #     print "---------------------",specialInstrument
                         #     info.tempdata['specialInstrumentId'].append(specialInstrument)
-                    col = [date, tempcode[0], tempcode[1], float(i[0]) / 100]
-                    print date, tempcode[0], tempcode[1], float(i[0]) / 100
-                    templist.append(col)
+
+                    tempcode = info.GetCodeByName(tempname)
+                    # col = [date, tempcode[0], tempcode[1], float(i[0]) / 100]
+                    templist[tempcode[0]]=float(i[0]) / 100
         except:
+            if str(tempname).strip('')!='':
+                print "请添加新品种别名",tempname
+                raise Exception
             continue
-    # print info.tempdata['specialInstrumentId']
-    # info.mysql.UpdateMarginExample(templist, '2')
+    print 'info.tempdata[specialInstrumentId]',info.tempdata['specialInstrumentId']
+    tdate=date.replace("-","")
+    FutureInstrumentList = info.GetAllTradeInstrumentByTradingDay(tdate)
+    for i in FutureInstrumentList:
+        try:
+            code = re.match('^[a-zA-Z]+', str(i)).group()
+            m=templist[code]
+            if i in info.tempdata['specialInstrumentId'].keys():
+                m=info.tempdata['specialInstrumentId'][i]
+            col=[date,i,FutureInstrumentList[i],m]
+            datalist.append(tuple(col))
+        except:
+            print "文字解析异常，未知品种",i,code,
+            raise Exception
+    print '东航期货',len(datalist)
+    info.mysql.UpdateMarginExample(datalist, '2')
 
 def GetInstrumentIdByCodeDate(code,ExchangeId,specialMonth):
     if ExchangeId=='CZCE':
