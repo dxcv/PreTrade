@@ -201,6 +201,26 @@ class InfoApi:
                     num=str(nyear)[2:3]+str(num)
         return code,num
 
+    def GetInstrumentIDByCodeAndDate(self,ExchangeID,code,date):
+        """
+        通过品种代码和年月日获取标准的交易合约，检验交易代码的大小写以及郑商所合约后面只保留三位数字(期货)
+        :param code: ProductCode
+        :param date:1904/1908
+        :return:
+        """
+        if ExchangeID in ['CZCE','CFFEX']:
+            code=str(code).strip().upper()
+        elif ExchangeID in ['SHFE','DCE','INE']:
+            ode=str(code).strip().lower()
+        if ExchangeID == 'CZCE':
+            date = ''.join(list(date)[1:4])
+        else:
+            date=''.join(list(date)[:4])
+        return code+date
+
+
+
+
     def GetMainInstrumentIdByProductCode(self,code,tradingday):
         """Get main InstrumentID by ProductCode """
         relInstrument=self.GetRelaviteInstrumentBycode(code)
