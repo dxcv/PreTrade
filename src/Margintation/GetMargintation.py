@@ -14,6 +14,10 @@
 from utils.InfoApi import *
 from data.setting import *
 import re
+import sys
+import os,datetime
+from multiprocessing import Process
+dir_path=os.path.dirname(os.path.abspath(".."))
 import datetime
 from utils.TradingDay import *
 from utils.BasicAPI import *
