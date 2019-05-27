@@ -6,8 +6,13 @@ from utils.InfoApi import  *
 import csv
 import pandas as pd
 import numpy as np
+import calendar
+import re
+import time
+import calendar
 
 
-a='CF907C18000'
+a=1.0
+b=[1,2,3,4]
 
-print  a[:5]
+print a.isdigit()

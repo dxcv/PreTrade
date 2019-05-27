@@ -58,16 +58,16 @@ def Level_1_Clean(filename, fileDirectory, info):
     firstdata = datetime.datetime.strptime(str(csv_data.at[0, '最后修改时间']), '%H:%M:%S').strftime("%H:%M:%S")
     starthms, endhms = GetSEndHms(TradTime,firstdata)
 
-    backup_name = info.cleanDatadict[2] + "_" + info.cleanDatadict[0] + ".csv"
-    backup_csvfile = IshaveFile(backup_name, info.cleanDatadict[3], False, "wb")
-
-    writer = csv.writer(backup_csvfile)
+    # backup_name = info.cleanDatadict[2] + "_" + info.cleanDatadict[0] + ".csv"
+    # backup_csvfile = IshaveFile(backup_name, info.cleanDatadict[3], False, "wb")
+    #
+    # writer = csv.writer(backup_csvfile)
     col=[]
     col.append('InstrumentId')
     col.append('TradingDay')
     for i in columnsNum1:
         col.append(columns0[i])
-    writer.writerow(col)
+    # writer.writerow(col)
     """lasthms 存储接下来的数据点 temp 记录上一个已经处理完的数据点"""
     for i in csv_data.index:
         date = datetime.datetime.strptime(str(csv_data.at[i, '最后修改时间']), '%H:%M:%S')
@@ -192,4 +192,7 @@ def Level_1_Clean(filename, fileDirectory, info):
             csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
         Myappend(csv_data, i, templist, InstrumentId, TradingDay)
         lasthms = theorynextdate(lasthms, TradTime)
-    writer.writerows(templist)
+
+    df=pd.DataFrame(data=templist,columns=col)
+    return df
+    # writer.writerows(templist)

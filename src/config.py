@@ -7,11 +7,11 @@ import numpy as np
 from utils.InfoApi import  *
 
 sql="""
-SELECT TOP (2) 
+SELECT TOP (3) 
       TradingDay,
 	  InstrumentID,
       [SettlementPrice]
-  FROM [PreTrade].[dbo].[SettlementDetail] where InstrumentID='CF909' or InstrumentID='CF907'   order by TradingDay desc
+  FROM [PreTrade].[dbo].[SettlementDetail] where InstrumentID='CF909' or InstrumentID='CF907'  or InstrumentID='CF001'   order by TradingDay desc
 """
 def GetInstrument():
     pass
@@ -34,4 +34,3 @@ if __name__=='__main__':
             symbol=key+'P'+str(int(k))
             print symbol
     # GetInstrument()
-

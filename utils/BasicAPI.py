@@ -229,3 +229,12 @@ def IsExistdiretory(dirctoryName,parent):
     """Is Parent diretory exist a dirctoryName file """
     if not os.path.exists(parent+"/"+dirctoryName):
         os.mkdir(parent+"/"+dirctoryName)
+
+def IsExistfile(dirctory,filename):
+    """Is Diretory exist a file named filename"""
+    try:
+        file=open(dirctory+filename,"w")
+        file.close()
+        return True
+    except:
+        return False

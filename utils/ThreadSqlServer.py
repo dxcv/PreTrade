@@ -76,6 +76,20 @@ class SqlServer:
         self.Disconnect()
         return self.GetResultList(resList)
 
+    def  ExecQueryGetDict(self,sql):
+        """
+        执行查询语句，返回一个dict，仅适用两个字段的查询
+        :param sql:
+        :return:
+        """
+        self.GetConnect()
+        self.cur.execute(sql)
+        resList = self.cur.fetchall()
+        self.Disconnect()
+        return self.GetResultDict(resList)
+
+
+
     def ExecNonQuery(self,sql):
         """
         执行非查询语句
@@ -149,3 +163,21 @@ class SqlServer:
         for i in result:
             temp.append(str(i[0].encode("utf-8")).strip())
         return temp
+
+    def GetResultDict(self,result):
+        """
+        将查询的结果转换为dict字典
+        :param result:
+        :return:
+        """
+        temp=dict()
+        if len(result):
+            for i in result:
+                try:
+                    data=float(i[1])
+                    temp[str(i[0].encode("utf-8"))] = i[1]
+                except:
+                    temp[str(i[0].encode("utf-8"))] = str(i[1].encode("utf-8"))
+        return temp
+
+
