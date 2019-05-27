@@ -43,7 +43,7 @@ def GetSourceData(info):
         fileDiretory = "E:/options/"
         if str(i)[:6] in TOP4Instrument and  optionresult[i]>50:
             """先标准化处理，再计算,return"""
-            print '标准化处理',str(i)[:6],i,optionresult[i],filename,fileDiretory,
+            print '标准化处理',str(i)[:6],i,optionresult[i],filename,fileDiretory
             if IsExistfile(saveDirector,filename):
                 df=Level_1_Clean(filename,fileDiretory+tradingday.replace("-",""),info)
                 InstrumentID = str(filename).split("_")[0]

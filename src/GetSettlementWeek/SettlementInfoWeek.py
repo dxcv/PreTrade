@@ -54,8 +54,9 @@ if __name__=="__main__":
     info.Get_Msplider()
 
     t = TradingDay(info)
-    startdate = datetime.datetime.strptime("20180105", "%Y%m%d")        #起始时间必须是星期五
+    startdate = datetime.datetime.strptime("20180223", "%Y%m%d")        #起始时间必须是星期五
     enddate = datetime.datetime.now()
+    enddate=startdate
     # enddate=datetime.datetime.strptime("20190302","%Y%m%d")
     mysplider = info.mysplider
 
