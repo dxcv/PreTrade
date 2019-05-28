@@ -35,10 +35,10 @@ def main(startdate, mysplider,info):
     else:
         print 'CFFEX', "持仓排名top20数据已经存在"
 
-    if not 'DCE' in eixstlist:
-        GetDCEPosition(info, startdate, "DCE")  # 获取大商所日成交top20
-    else:
-        print 'DCE', "持仓排名top20数据已经存在"
+    # if not 'DCE' in eixstlist:
+    #     GetDCEPosition(info, startdate, "DCE")  # 获取大商所日成交top20
+    # else:
+    #     print 'DCE', "持仓排名top20数据已经存在"
 
     if not 'SHFE' in eixstlist:
         GetSHFEPosition(info, startdate, "SHFE")  # 获取上期所日成交top20
