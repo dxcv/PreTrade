@@ -32,33 +32,31 @@ def GetSourceData(info):
     optionresult=info.mysql.ExecQueryGetDict(optionsql.format(TradingDay=info.TradingDay.strftime("%Y-%m-%d")))
     optionresult=optionresult
     templist=[]
-    columns = [u'合约', u'平均宽度', u'义务宽度']
+    columns = [u'合约', u'平均宽度', u'连续报价义务宽度',u'回应义务宽度']
     saveDirector = "D:/GitData/width/"
     tradingday=info.TradingDay.strftime("%Y-%m-%d")
     savafile = saveDirector + tradingday.replace("-","")+u"cu期权报价宽度.xlsx"
     writer = pd.ExcelWriter(savafile, engine='xlsxwriter')
     for i in sorted(optionresult.keys(),reverse=False):
+        print i
         info.cleanDatadict = [tradingday, None, i]
         filename = i + "_" + tradingday.replace("-", "") + ".csv"
         fileDiretory = "E:/options/"
         if str(i)[:6] in TOP4Instrument and  optionresult[i]>50:
             """先标准化处理，再计算,return"""
-            print '标准化处理',str(i)[:6],i,optionresult[i],filename,fileDiretory
-            if IsExistfile(saveDirector,filename):
+            if IsExistfile(fileDiretory+tradingday.replace("-","")+"/",filename):
                 df=Level_1_Clean(filename,fileDiretory+tradingday.replace("-",""),info)
-                InstrumentID = str(filename).split("_")[0]
                 length = len(df)
                 BP = sum(df['BP1']) / length
                 BPWidth = GetWidth(BP)
                 width = sum(df['SP1'] - df['BP1']) / length
-                temp=[InstrumentID,width,BPWidth]
+                temp=[i,width,BPWidth,'']
                 templist.append(temp)
             else:
                 print "source file missing filename named",filename
                 raise Exception
         else:
             """直接计算相关数据,带return"""
-            print i,optionresult[i]
             if IsExistfile(saveDirector, filename):
                 temp = GetResponseAverageWidth(fileDiretory+tradingday.replace("-",""), filename)
                 templist.append(temp)
@@ -105,10 +103,13 @@ def main():
 
     while startdate<=enddate:
         print startdate
+        starttime = datetime.datetime.now()
         setattr(info,'TradingDay',startdate)
         GetSourceData(info)
         startdate=t.NextTradingDayFuture(startdate.strftime("%Y%m%d"),True)
         startdate = datetime.datetime.strptime(startdate, '%Y%m%d')
+        endtime=datetime.datetime.now()
+        print endtime-starttime
 
 
 

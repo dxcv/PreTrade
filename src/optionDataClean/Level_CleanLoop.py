@@ -6,6 +6,8 @@ from CleanAPI import *
 import pandas as pd
 import sys,csv,datetime
 
+columns=['申卖价一','申买价一']
+
 columnsNum1=['最后修改时间','最新价','持仓量','数量','成交金额','本次结算价','上次结算价','昨收盘','今开盘','最高价','最低价','申卖价一','申卖价二','申卖价三','申卖价四','申卖价五'
     , '申卖量一','申卖量二','申卖量三','申卖量四','申卖量五','申买价一','申买价二','申买价三','申买价四','申买价五','申买量一','申买量二','申买量三','申买量四',
          '申买量五']       ##缺少  Volume：当前成交量    Amount：当前成交金额       isBuy：是否为主动性买单
@@ -19,15 +21,10 @@ cols=['交易日','合约代码','交易所代码','合约在交易所的代码'
 
 
 
-def Myappend(csv_data, i, templist,InstrumentID,TradingDay):
-    newcol = []
-    newcol.append(TradingDay)
-    newcol.append(InstrumentID)
-    for column in columnsNum1:
+def Myappend(csv_data, i, templist):
+    newcol=[]
+    for column in columns:
         newcol.append(csv_data.at[i, column])
-    # newcol.insert(4,'')
-    # newcol.insert(5,'')
-    # newcol.insert(35,'')
     templist.append(tuple(newcol))
 
 
@@ -39,11 +36,8 @@ def Level_1_Clean(filename, fileDirectory, info):
     :return:
     """
     templist = []
-    TotalAmount = 0
     temp = ""  #记录已经完成的上一个数据点
     lasthms = ""
-    InstrumentId = info.cleanDatadict[2]
-    TradingDay = info.cleanDatadict[0]
     # code ="cu"
     # sql = """ select [DayTradTime],[NightTradTime] from ContractCode where InstrumentCode='%s'"""%code
     # TradTime=info.mysql.ExecQuery(sql)[0]
@@ -58,22 +52,11 @@ def Level_1_Clean(filename, fileDirectory, info):
     firstdata = datetime.datetime.strptime(str(csv_data.at[0, '最后修改时间']), '%H:%M:%S').strftime("%H:%M:%S")
     starthms, endhms = GetSEndHms(TradTime,firstdata)
 
-    # backup_name = info.cleanDatadict[2] + "_" + info.cleanDatadict[0] + ".csv"
-    # backup_csvfile = IshaveFile(backup_name, info.cleanDatadict[3], False, "wb")
-    #
-    # writer = csv.writer(backup_csvfile)
-    col=[]
-    col.append('InstrumentId')
-    col.append('TradingDay')
-    for i in columnsNum1:
-        col.append(columns0[i])
-    # writer.writerow(col)
+    col=[ 'SP1','BP1']
     """lasthms 存储接下来的数据点 temp 记录上一个已经处理完的数据点"""
     for i in csv_data.index:
         date = datetime.datetime.strptime(str(csv_data.at[i, '最后修改时间']), '%H:%M:%S')
         hms = date.strftime("%H%M%S")
-        if hms=='010000':
-            pass
         if temp==hms:
             continue
         if isintimerange(hms+"000",TradTime):
@@ -85,8 +68,8 @@ def Level_1_Clean(filename, fileDirectory, info):
                         csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
                     lasthms=theorynextdate(starthms,TradTime)
                     starthms=""
-                    csv_data.at[i, '最后修改时间'] = str('%09d' % int(hms + "000"))
-                    Myappend(csv_data, i, templist, InstrumentId, TradingDay)
+                    # csv_data.at[i, '最后修改时间'] = str('%09d' % int(hms + "000"))
+                    Myappend(csv_data, i, templist)
                 else:
                     """补开盘时缺失的数据"""
                     while starthms!=hms+'000':
@@ -95,26 +78,23 @@ def Level_1_Clean(filename, fileDirectory, info):
                                 csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
                             if int(csv_data.at[i, '申买价一']) == 0:
                                 csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-                            csv_data.at[i, '最后修改时间'] =starthms
-                            Myappend(csv_data, i, templist, InstrumentId, TradingDay)
+                            # csv_data.at[i, '最后修改时间'] =starthms
+                            Myappend(csv_data, i, templist,)
                             starthms=theorynextdate(starthms,TradTime)
                         else:
                             if int(csv_data.at[i-1, '申卖价一']) == 0:
                                 csv_data.at[i-1, '申卖价一'] = csv_data.at[i, '涨停板价']
                             if int(csv_data.at[i-1, '申买价一']) == 0:
                                 csv_data.at[i-1, '申买价一'] = csv_data.at[i, '跌停板价']
-                            csv_data.at[i-1, '最后修改时间'] = starthms
-                            Myappend(csv_data, i-1, templist, InstrumentId, TradingDay)
+                            # csv_data.at[i-1, '最后修改时间'] = starthms
+                            Myappend(csv_data, i-1, templist)
                             starthms = theorynextdate(starthms, TradTime)
-                    csv_data.at[i, '最后修改时间'] = starthms
+                    # csv_data.at[i, '最后修改时间'] = starthms
                     if int(csv_data.at[i, '申卖价一']) == 0:
                         csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
                     if int(csv_data.at[i, '申买价一']) == 0:
                         csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-                    Myappend(csv_data, i, templist, InstrumentId, TradingDay)
-                    # if lasthms == endhms:
-                    #     daylist = [InstrumentId, TradingDay, csv_data.at[i, '数量'], csv_data.at[i, '成交金额'],csv_data.at[i, '本次结算价'], csv_data.at[i, '最新价'], csv_data.at[i, '上次结算价'],csv_data.at[i, '昨收盘']]
-                    #     break
+                    Myappend(csv_data, i, templist)
                     lasthms = theorynextdate(starthms, TradTime)
                     starthms=""
             elif hms !=temp:
@@ -124,17 +104,17 @@ def Level_1_Clean(filename, fileDirectory, info):
                             csv_data.at[i - 1, '申卖价一'] = csv_data.at[i, '涨停板价']
                         if int(csv_data.at[i - 1, '申买价一']) == 0:
                             csv_data.at[i - 1, '申买价一'] = csv_data.at[i, '跌停板价']
-                        csv_data.at[i-1, '最后修改时间'] = lasthms
-                        Myappend(csv_data, i-1, templist, InstrumentId, TradingDay)
+                        # csv_data.at[i-1, '最后修改时间'] = lasthms
+                        Myappend(csv_data, i-1, templist)
                         lasthms = theorynextdate(lasthms, TradTime)
                     if specialdata(hms,TradTime):
                             temp = hms
-                    csv_data.at[i, '最后修改时间'] = lasthms
+                    # csv_data.at[i, '最后修改时间'] = lasthms
                     if int(csv_data.at[i, '申卖价一']) == 0:
                         csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
                     if int(csv_data.at[i, '申买价一']) == 0:
                         csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-                    Myappend(csv_data, i, templist, InstrumentId, TradingDay)
+                    Myappend(csv_data, i, templist)
                     if lasthms == endhms:
                         # daylist = [InstrumentId, TradingDay, csv_data.at[i, '数量'], csv_data.at[i, '成交金额'],csv_data.at[i, '本次结算价'], csv_data.at[i, '最新价'], csv_data.at[i, '上次结算价'],csv_data.at[i, '昨收盘']]
                         break
@@ -142,57 +122,55 @@ def Level_1_Clean(filename, fileDirectory, info):
                     if specialdata(hms,TradTime):
                         temp = hms
                 elif lasthms==hms+"000":
-                    csv_data.at[i, '最后修改时间'] = lasthms
+                    # csv_data.at[i, '最后修改时间'] = lasthms
                     if int(csv_data.at[i, '申卖价一']) == 0:
                         csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
                     if int(csv_data.at[i, '申买价一']) == 0:
                         csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-                    Myappend(csv_data, i, templist,InstrumentId,TradingDay)
+                    Myappend(csv_data, i, templist)
                     lasthms = theorynextdate(lasthms, TradTime)
                     """特殊点的处理"""
                     if specialdata(hms,TradTime):
                         temp=hms
                 elif lasthms==hms+"500":
-                    csv_data.at[i, '最后修改时间'] = lasthms
+                    # csv_data.at[i, '最后修改时间'] = lasthms
                     if int(csv_data.at[i, '申卖价一']) == 0:
                         csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
                     if int(csv_data.at[i, '申买价一']) == 0:
                         csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-                    Myappend(csv_data, i, templist, InstrumentId, TradingDay)
+                    Myappend(csv_data, i, templist)
                     lasthms = theorynextdate(lasthms, TradTime)
                     temp=hms
 
         "结束循环的两种情况"
         if lasthms==endhms:
-            daylist = [InstrumentId, TradingDay, csv_data.at[i, '数量'], csv_data.at[i, '成交金额'],csv_data.at[i, '本次结算价'], csv_data.at[i, '最新价'], csv_data.at[i, '上次结算价'], csv_data.at[i, '昨收盘']]
             break
         if i ==length and lasthms!=endhms:
             while lasthms != endhms and lasthms!="":
-                csv_data.at[i, '最后修改时间'] = lasthms
+                # csv_data.at[i, '最后修改时间'] = lasthms
                 if int(csv_data.at[i, '申卖价一']) == 0:
                     csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
                 if int(csv_data.at[i, '申买价一']) == 0:
                     csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-                Myappend(csv_data, i, templist, InstrumentId, TradingDay)
+                Myappend(csv_data, i, templist)
                 lasthms = theorynextdate(lasthms, TradTime)
-            csv_data.at[i, '最后修改时间'] = lasthms
+            # csv_data.at[i, '最后修改时间'] = lasthms
             if int(csv_data.at[i, '申卖价一']) == 0:
                 csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
             if int(csv_data.at[i, '申买价一']) == 0:
                 csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-            Myappend(csv_data, i, templist, InstrumentId, TradingDay)
+            Myappend(csv_data, i, templist)
             if lasthms=="":
                 break
             lasthms = theorynextdate(lasthms, TradTime)
     while lasthms!="":
-        csv_data.at[i, '最后修改时间'] = lasthms
+        # csv_data.at[i, '最后修改时间'] = lasthms
         if int(csv_data.at[i, '申卖价一']) == 0:
             csv_data.at[i, '申卖价一'] = csv_data.at[i, '涨停板价']
         if int(csv_data.at[i, '申买价一']) == 0:
             csv_data.at[i, '申买价一'] = csv_data.at[i, '跌停板价']
-        Myappend(csv_data, i, templist, InstrumentId, TradingDay)
+        Myappend(csv_data, i, templist)
         lasthms = theorynextdate(lasthms, TradTime)
 
     df=pd.DataFrame(data=templist,columns=col)
     return df
-    # writer.writerows(templist)

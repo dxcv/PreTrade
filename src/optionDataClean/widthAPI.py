@@ -47,4 +47,4 @@ def GetResponseAverageWidth(Directory,filename):
     BP = sum(df[u'申买价一']) / length
     BPWidth = GetRespondWidth(BP)
     width = sum(df[u'申卖价一'] - df[u'申买价一']) / length
-    return InstrumentID, width, BPWidth
+    return [InstrumentID, width,'', BPWidth]
