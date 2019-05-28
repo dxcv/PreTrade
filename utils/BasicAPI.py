@@ -8,7 +8,7 @@ import re
 import datetime
 from utils.TradingDay.EndDate import *
 from data.setting import *
-import sys,os
+import sys,os,time
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -232,9 +232,13 @@ def IsExistdiretory(dirctoryName,parent):
 
 def IsExistfile(dirctory,filename):
     """Is Diretory exist a file named filename"""
-    try:
-        file=open(dirctory+filename,"w")
-        file.close()
+    if os.path.exists(dirctory+filename):
         return True
-    except:
-        return False
+    return False
+
+def me_time(fn):
+    def _wrapper(*args,**kwargs):
+        start=time.clock()
+        fn(*args, **kwargs)
+        print("%s cost %s second" % (fn.__name__, time.clock() - start))
+    return _wrapper
