@@ -165,7 +165,19 @@ class TradingDay:
             num-=1
         return tradingday
 
-
+    def GetDaysBetweenTwoDate(self,day1,day2):
+        """
+        day1和day2两个日期之间的交易日的数量,包含day1和day2
+        :param day1: %Y%m%s
+        :param day2: %Y%m%s
+        :return:
+        """
+        num=0
+        while day1<=day2:
+            if self.IsTradingDayFuture(day1):
+                num += 1
+            day1=self.NextTradingDayFuture(day1,True)
+        return num
 
 def NextDay(day):
     nextday=datetime.datetime.strptime(day,"%Y%m%d")+datetime.timedelta(days=1)
