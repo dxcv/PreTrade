@@ -56,7 +56,9 @@ if __name__=="__main__":
     startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), False)
     startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
     enddate = datetime.datetime.now()
-    startdate=enddate
+    if enddate.hour<16:
+        enddate=t.NextTradingDayFuture(enddate.strftime("%Y%m%d"),False)
+        enddate=datetime.datetime.strptime(enddate,"%Y%m%d")
     mysplider = info.mysplider
 
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
