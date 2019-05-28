@@ -32,7 +32,6 @@ def GetAverageWidth(Directory,filename):
     BP = sum(df['BP1']) / length
     BPWidth = GetWidth(BP)
     width = sum(df['SP1'] - df['BP1']) / length
-
     return [InstrumentID,width,BPWidth,'']
 
 def GetResponseAverageWidth(Directory,filename):

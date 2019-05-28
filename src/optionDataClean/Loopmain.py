@@ -100,7 +100,6 @@ def main():
     #     enddate = datetime.datetime.strptime(enddate, "%Y%m%d")
     enddate=datetime.datetime.strptime("20190516","%Y%m%d")
 
-
     while startdate<=enddate:
         print startdate
         starttime = datetime.datetime.now()
