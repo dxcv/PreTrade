@@ -32,7 +32,7 @@ def GetSourceData(info):
     optionresult=info.mysql.ExecQueryGetDict(optionsql.format(TradingDay=info.TradingDay.strftime("%Y-%m-%d")))
     optionresult=optionresult
     templist=[]
-    columns = [u'合约', u'平均宽度', u'连续报价义务宽度',u'回应义务宽度']
+    columns = [u'合约', u'平均宽度', u'连续报价义务宽度',u'回应报价义务宽度']
     saveDirector = "D:/GitData/width/"
     tradingday=info.TradingDay.strftime("%Y-%m-%d")
     savafile = saveDirector + tradingday.replace("-","")+u"cu期权报价宽度.xlsx"
@@ -42,7 +42,7 @@ def GetSourceData(info):
         info.cleanDatadict = [tradingday, None, i]
         filename = i + "_" + tradingday.replace("-", "") + ".csv"
         fileDiretory = "E:/options/"
-        if str(i)[:6] in TOP4Instrument and  optionresult[i]>50:
+        if str(i)[:6] in TOP4Instrument and  optionresult[i]>10:
             """先标准化处理，再计算,return"""
             if IsExistfile(fileDiretory+tradingday.replace("-","")+"/",filename):
                 df=Level_1_Clean(filename,fileDiretory+tradingday.replace("-",""),info)
@@ -57,7 +57,7 @@ def GetSourceData(info):
                 raise Exception
         else:
             """直接计算相关数据,带return"""
-            if IsExistfile(saveDirector, filename):
+            if IsExistfile(fileDiretory + tradingday.replace("-", "") + "/", filename):
                 temp = GetResponseAverageWidth(fileDiretory+tradingday.replace("-",""), filename)
                 templist.append(temp)
 
@@ -68,7 +68,7 @@ def GetSourceData(info):
     df.to_excel(writer, sheet_name='Sheet1', startrow=0, startcol=0, index=None)
     workbook = writer.book
     worksheet = writer.sheets['Sheet1']
-    worksheet.set_column('A:C', 20)
+    worksheet.set_column('A:D', 20)
 
     # Add a header format.
     header_format = workbook.add_format({
@@ -86,7 +86,7 @@ def GetSourceData(info):
 
 def main():
     Directory="E:/options/"
-    startdate="20190524"
+    startdate="20190516"
     startdate=datetime.datetime.strptime(startdate,'%Y%m%d')
     info=InfoApi()
     info.GetDbHistoryConnect()
@@ -98,7 +98,7 @@ def main():
     # if not t.IsTradingDayFuture(enddate.strftime("%Y%m%d")):
     #     enddate = t.NextTradingDayFuture(enddate.strftime("%Y%m%d"), False)
     #     enddate = datetime.datetime.strptime(enddate, "%Y%m%d")
-    enddate=datetime.datetime.strptime("20190524","%Y%m%d")
+    enddate=datetime.datetime.strptime("20190516","%Y%m%d")
 
 
     while startdate<=enddate:
