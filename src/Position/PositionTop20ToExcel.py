@@ -34,15 +34,17 @@ if __name__=="__main__":
     info.GetPositionTop20InstrumentID()
 
     t = NextTradingDay.TradingDay(info)
-    startdate = datetime.datetime.strptime("20190429", "%Y%m%d")
-
-
+    startdate = datetime.datetime.now() - datetime.timedelta(days=4)
+    startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), False)
+    startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
     enddate = datetime.datetime.now()
+    if enddate.hour < 16:
+        enddate = t.NextTradingDayFuture(enddate.strftime("%Y%m%d"), False)
+        enddate = datetime.datetime.strptime(enddate, "%Y%m%d")
     mysplider = info.mysplider
-    startdate=enddate
 
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
-        print startdate,
+        print startdate
         last_day=startdate.strftime("%Y%m%d")
         main(startdate, mysplider,info)
         startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)

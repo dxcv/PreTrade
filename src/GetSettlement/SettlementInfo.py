@@ -64,7 +64,7 @@ if __name__=="__main__":
     while startdate.strftime("%Y%m%d") <= enddate.strftime("%Y%m%d"):
         print startdate
         main(startdate, mysplider,info)
-        startdate = t.NextTradingDay(startdate.strftime("%Y%m%d"), True)
+        startdate = t.NextTradingDayFuture(startdate.strftime("%Y%m%d"), True)
         startdate = datetime.datetime.strptime(startdate, "%Y%m%d")
 
     info.mysql.Disconnect()
